@@ -1,9 +1,16 @@
+import Navbar from "./components/landing/Navbar";
+import Hero from "./components/landing/Hero";
+import Features from "./components/landing/Features";
+import About from "./components/landing/About";
+
 function App() {
   return (
-    <div>
-      <h1>CareerPilot AI 🌱</h1>
-      <p>Grow your career, one day at a time.</p>
-    </div>
+    <>
+      <Navbar />
+      <Hero />
+      <Features />
+      <About />
+    </>
   );
 }
 
