@@ -7,7 +7,7 @@ function Navbar() {
           🌱 CareerPilot AI
         </h1>
 
-        <div className="flex gap-8 text-gray-700">
+        <div className="flex gap-8 items-center text-gray-700">
 
           <a href="#">Features</a>
 
@@ -15,11 +15,19 @@ function Navbar() {
 
           <a href="#">Roadmap</a>
 
-          <a href="#">Login</a>
+          <button
+            className="text-gray-700"
+            onClick={() => window.location.href = "/login"}
+          >
+            Login
+          </button>
 
-          <button onClick={() => window.location.href = "/dashboard"}>
-  Get Started
-</button>
+          <button
+            className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700"
+            onClick={() => window.location.href = "/dashboard"}
+          >
+            Get Started
+          </button>
 
         </div>
 
