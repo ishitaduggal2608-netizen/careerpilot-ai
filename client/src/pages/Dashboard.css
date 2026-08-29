@@ -1,0 +1,161 @@
+.dashboard {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 50px 8%;
+  color: #111827;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.welcome {
+  color: #00a63c;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.dashboard-header h1 {
+  font-size: 38px;
+  margin: 0;
+}
+
+.subtitle {
+  color: #64748b;
+  margin-top: 10px;
+  font-size: 17px;
+}
+
+.profile-circle {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #00a63c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.readiness-card {
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 25px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-top p {
+  color: #64748b;
+  margin: 0;
+}
+
+.card-top h2 {
+  font-size: 32px;
+  margin: 8px 0;
+}
+
+.card-top span {
+  font-size: 30px;
+}
+
+.progress-bar {
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #00a63c;
+  border-radius: 10px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: white;
+  padding: 28px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+}
+
+.stat-card span {
+  font-size: 28px;
+}
+
+.stat-card p {
+  color: #64748b;
+  margin-bottom: 5px;
+}
+
+.stat-card h2 {
+  margin: 5px 0 10px;
+}
+
+.stat-card small {
+  color: #64748b;
+}
+
+.focus-section {
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+}
+
+.focus-section > h2 {
+  margin-top: 0;
+}
+
+.focus-item {
+  display: flex;
+  gap: 15px;
+  padding: 18px 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.focus-item span {
+  color: #00a63c;
+  font-weight: bold;
+}
+
+.focus-item h3 {
+  margin: 0 0 5px;
+}
+
+.focus-item p {
+  margin: 0;
+  color: #64748b;
+}
+
+@media (max-width: 800px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard {
+    padding: 30px 5%;
+  }
+
+  .dashboard-header h1 {
+    font-size: 30px;
+  }
+}

@@ -26,9 +26,9 @@ function Hero() {
             </p>
 
             <div className="mt-8 flex gap-4">
-              <button className="bg-green-600 text-white px-7 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
-                Get Started
-              </button>
+              <button onClick={() => window.location.href = "/dashboard"}>
+  Get Started
+</button>
 
               <button className="border border-gray-300 text-gray-700 px-7 py-3 rounded-lg font-semibold hover:bg-gray-50 transition">
                 Explore Features
