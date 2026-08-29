@@ -4,6 +4,7 @@
   padding: 40px 8%;
   font-family: Arial, sans-serif;
   color: #0f172a;
+  box-sizing: border-box;
 }
 
 /* Header */
@@ -13,6 +14,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 35px;
+  gap: 30px;
 }
 
 .welcome {
@@ -30,12 +32,11 @@
   margin: 0;
 }
 
-/* Profile and Logout */
-
 .header-right {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-shrink: 0;
 }
 
 .profile-circle {
@@ -48,18 +49,35 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* Buttons */
+
+.roadmap-button,
+.logout-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.roadmap-button {
+  background: #00a63c;
+  color: white;
+  border: 1px solid #00a63c;
+}
+
+.roadmap-button:hover {
+  background: #008f34;
 }
 
 .logout-button {
   background: white;
   color: #00a63c;
   border: 1px solid #00a63c;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
 }
 
 .logout-button:hover {
@@ -67,7 +85,7 @@
   color: white;
 }
 
-/* Placement Readiness */
+/* Readiness */
 
 .readiness-card {
   background: white;
@@ -75,6 +93,7 @@
   border-radius: 16px;
   padding: 28px;
   margin-bottom: 18px;
+  box-sizing: border-box;
 }
 
 .card-top {
@@ -111,7 +130,7 @@
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   margin-bottom: 24px;
 }
@@ -121,6 +140,8 @@
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 25px;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .stat-card span {
@@ -135,6 +156,7 @@
 .stat-card h2 {
   margin: 0;
   font-size: 22px;
+  overflow-wrap: anywhere;
 }
 
 .stat-card small {
@@ -150,6 +172,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 25px;
+  box-sizing: border-box;
 }
 
 .focus-section > h2 {
@@ -179,26 +202,73 @@
   margin: 0;
 }
 
-/* Responsive */
+/* Tablet */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .dashboard {
-    padding: 25px 5%;
+    padding: 30px 5%;
+  }
+
+  .dashboard-header {
+    align-items: flex-start;
+  }
+
+  .header-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .dashboard {
+    padding: 25px 5%;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .dashboard-header h1 {
     font-size: 26px;
   }
 
-  .header-right {
-    gap: 10px;
+  .readiness-card {
+    padding: 22px;
   }
 
-  .logout-button {
-    padding: 8px 14px;
+  .stat-card {
+    padding: 22px;
   }
+
+  .focus-section {
+    padding: 22px;
+  }
+}
+.dsa-button {
+  background: white;
+  color: #00a63c;
+  border: 1px solid #00a63c;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dsa-button:hover {
+  background: #00a63c;
+  color: white;
 }

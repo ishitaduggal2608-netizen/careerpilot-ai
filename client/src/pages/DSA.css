@@ -1,0 +1,237 @@
+.dsa-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 40px 8%;
+  font-family: Arial, sans-serif;
+  color: #0f172a;
+}
+
+/* Header */
+
+.dsa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.dsa-label {
+  color: #00a63c;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.dsa-header h1 {
+  font-size: 32px;
+  margin: 0 0 10px;
+}
+
+.dsa-header p:last-child {
+  color: #64748b;
+  margin: 0;
+  max-width: 650px;
+  line-height: 1.6;
+}
+
+.dsa-progress {
+  min-width: 130px;
+  text-align: right;
+}
+
+.dsa-progress span {
+  display: block;
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.dsa-progress strong {
+  font-size: 28px;
+  color: #00a63c;
+}
+
+/* Overall Progress */
+
+.dsa-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.dsa-progress-fill {
+  height: 100%;
+  background: #00a63c;
+  border-radius: 10px;
+}
+
+/* Statistics */
+
+.dsa-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.dsa-stat-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.dsa-stat-card span {
+  font-size: 22px;
+}
+
+.dsa-stat-card p {
+  color: #64748b;
+  margin: 12px 0 8px;
+}
+
+.dsa-stat-card h2 {
+  margin: 0;
+  font-size: 25px;
+}
+
+/* DSA Section */
+
+.dsa-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 25px;
+}
+
+.dsa-section-header h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.dsa-section-header p {
+  margin: 0 0 20px;
+  color: #64748b;
+}
+
+/* Topics */
+
+.dsa-topic-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.dsa-topic {
+  padding: 20px 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.topic-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.topic-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topic-number {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.topic-title h3 {
+  margin: 0 0 5px;
+  font-size: 17px;
+}
+
+.topic-title p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.topic-info > strong {
+  color: #00a63c;
+}
+
+/* Topic Progress */
+
+.topic-progress-bar {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.topic-progress-fill {
+  height: 100%;
+  background: #00a63c;
+  border-radius: 10px;
+}
+
+/* Button */
+
+.topic-button {
+  margin-top: 15px;
+  padding: 8px 15px;
+  background: white;
+  color: #00a63c;
+  border: 1px solid #00a63c;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.topic-button:hover {
+  background: #00a63c;
+  color: white;
+}
+
+/* Completed Topic */
+
+.topic-completed .topic-number {
+  background: #dcfce7;
+  color: #00a63c;
+}
+
+/* Responsive */
+
+@media (max-width: 800px) {
+  .dsa-page {
+    padding: 25px 5%;
+  }
+
+  .dsa-header {
+    flex-direction: column;
+  }
+
+  .dsa-progress {
+    text-align: left;
+  }
+
+  .dsa-header h1 {
+    font-size: 26px;
+  }
+
+  .dsa-stats {
+    grid-template-columns: 1fr;
+  }
+}

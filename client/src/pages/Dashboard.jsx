@@ -6,11 +6,24 @@ function Dashboard() {
     window.location.href = "/login";
   };
 
+  const handleRoadmap = () => {
+    window.location.href = "/roadmap";
+  };
+
+  const handleDSA = () => {
+    window.location.href = "/dsa";
+  };
+
+  const handleInterview = () => {
+    window.location.href = "/interview";
+  };
+
   return (
     <div className="dashboard">
 
       {/* Header */}
       <div className="dashboard-header">
+
         <div>
           <p className="welcome">Welcome back 👋</p>
 
@@ -22,9 +35,31 @@ function Dashboard() {
         </div>
 
         <div className="header-right">
+
           <div className="profile-circle">
             CP
           </div>
+
+          <button
+            className="roadmap-button"
+            onClick={handleRoadmap}
+          >
+            Roadmap
+          </button>
+
+          <button
+            className="dsa-button"
+            onClick={handleDSA}
+          >
+            DSA
+          </button>
+
+          <button
+            className="dsa-button"
+            onClick={handleInterview}
+          >
+            Interview
+          </button>
 
           <button
             className="logout-button"
@@ -32,7 +67,9 @@ function Dashboard() {
           >
             Logout
           </button>
+
         </div>
+
       </div>
 
       {/* Placement Readiness */}
@@ -42,7 +79,6 @@ function Dashboard() {
 
           <div>
             <p>Placement Readiness</p>
-
             <h2>72%</h2>
           </div>
 
@@ -116,13 +152,11 @@ function Dashboard() {
 
         <h2>Today's Focus</h2>
 
-        {/* Focus Item 1 */}
         <div className="focus-item">
 
           <span>✓</span>
 
           <div>
-
             <h3>
               Complete 2 DSA problems
             </h3>
@@ -130,18 +164,15 @@ function Dashboard() {
             <p>
               Keep your placement roadmap on track.
             </p>
-
           </div>
 
         </div>
 
-        {/* Focus Item 2 */}
         <div className="focus-item">
 
           <span>✓</span>
 
           <div>
-
             <h3>
               Practice interview questions
             </h3>
@@ -149,7 +180,6 @@ function Dashboard() {
             <p>
               Prepare answers for common technical questions.
             </p>
-
           </div>
 
         </div>

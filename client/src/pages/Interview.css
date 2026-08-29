@@ -1,0 +1,262 @@
+.interview-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 40px 8%;
+  font-family: Arial, sans-serif;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+/* Header */
+
+.interview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.interview-label {
+  color: #00a63c;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.interview-header h1 {
+  font-size: 32px;
+  margin: 0 0 10px;
+}
+
+.interview-header p:last-child {
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.interview-progress {
+  text-align: right;
+  min-width: 130px;
+}
+
+.interview-progress span {
+  display: block;
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.interview-progress strong {
+  font-size: 28px;
+  color: #00a63c;
+}
+
+/* Overall Progress */
+
+.interview-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.interview-progress-fill {
+  height: 100%;
+  background: #00a63c;
+  border-radius: 10px;
+}
+
+/* Cards */
+
+.interview-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.interview-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 25px;
+  box-sizing: border-box;
+}
+
+.interview-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.interview-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+  background: #dcfce7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+}
+
+.interview-card-top > span {
+  color: #00a63c;
+  font-weight: bold;
+}
+
+.interview-card h2 {
+  font-size: 20px;
+  margin: 18px 0 10px;
+}
+
+.interview-card > p {
+  color: #64748b;
+  line-height: 1.5;
+  min-height: 70px;
+}
+
+/* Topics */
+
+.interview-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.interview-topics span {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 6px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* Category Progress */
+
+.category-progress-bar {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.category-progress-fill {
+  height: 100%;
+  background: #00a63c;
+  border-radius: 10px;
+}
+
+/* Buttons */
+
+.interview-button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 10px;
+  background: white;
+  color: #00a63c;
+  border: 1px solid #00a63c;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.interview-button:hover {
+  background: #00a63c;
+  color: white;
+}
+
+/* Completed */
+
+.interview-completed {
+  border-color: #bbf7d0;
+}
+
+.interview-completed .interview-icon {
+  background: #dcfce7;
+}
+
+/* Practice Section */
+
+.practice-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.practice-section h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.practice-section p {
+  margin: 0;
+  color: #64748b;
+}
+
+.practice-button {
+  background: #00a63c;
+  color: white;
+  border: none;
+  padding: 11px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.practice-button:hover {
+  background: #008f34;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .interview-page {
+    padding: 30px 5%;
+  }
+
+  .interview-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .interview-page {
+    padding: 25px 5%;
+  }
+
+  .interview-header {
+    flex-direction: column;
+  }
+
+  .interview-progress {
+    text-align: left;
+  }
+
+  .interview-header h1 {
+    font-size: 26px;
+  }
+
+  .practice-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .practice-button {
+    width: 100%;
+  }
+}

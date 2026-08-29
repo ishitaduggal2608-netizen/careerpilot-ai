@@ -9,21 +9,32 @@ function Navbar() {
 
         <div className="flex gap-8 items-center text-gray-700">
 
-          <a href="#">Features</a>
-
-          <a href="#">About</a>
-
-          <a href="#">Roadmap</a>
+          <button
+            onClick={() => window.location.href = "/#features"}
+          >
+            Features
+          </button>
 
           <button
-            className="text-gray-700"
+            onClick={() => window.location.href = "/#about"}
+          >
+            About
+          </button>
+
+          <button
+            onClick={() => window.location.href = "/roadmap"}
+          >
+            Roadmap
+          </button>
+
+          <button
             onClick={() => window.location.href = "/login"}
           >
             Login
           </button>
 
           <button
-            className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700"
+            className="bg-green-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
             onClick={() => window.location.href = "/dashboard"}
           >
             Get Started
