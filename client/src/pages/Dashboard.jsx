@@ -18,6 +18,14 @@ function Dashboard() {
     window.location.href = "/interview";
   };
 
+  const handleProfile = () => {
+    window.location.href = "/profile";
+  };
+
+  const handleResume = () => {
+    window.location.href = "/resume";
+  };
+
   return (
     <div className="dashboard">
 
@@ -36,9 +44,10 @@ function Dashboard() {
 
         <div className="header-right">
 
-          <div className="profile-circle">
-            CP
-          </div>
+          <div className="brand-logo">
+  <span className="brand-icon">✦</span>
+  <span className="brand-name">CareerPilot AI</span>
+</div>
 
           <button
             className="roadmap-button"
@@ -62,6 +71,27 @@ function Dashboard() {
           </button>
 
           <button
+            className="dsa-button"
+            onClick={handleProfile}
+          >
+            Profile
+          </button>
+
+          <button
+            className="dsa-button"
+            onClick={handleResume}
+          >
+            Resume
+          </button>
+
+          <button
+  className="ai-button"
+  onClick={() => window.location.href = "/ai-assistant"}
+>
+  ✦ AI Assistant
+</button>
+
+          <button
             className="logout-button"
             onClick={handleLogout}
           >
@@ -71,6 +101,7 @@ function Dashboard() {
         </div>
 
       </div>
+
 
       {/* Placement Readiness */}
       <div className="readiness-card">
@@ -97,10 +128,10 @@ function Dashboard() {
 
       </div>
 
+
       {/* Statistics */}
       <div className="stats-grid">
 
-        {/* DSA */}
         <div className="stat-card">
 
           <span>💻</span>
@@ -115,7 +146,7 @@ function Dashboard() {
 
         </div>
 
-        {/* Interview */}
+
         <div className="stat-card">
 
           <span>🤖</span>
@@ -130,7 +161,7 @@ function Dashboard() {
 
         </div>
 
-        {/* Career Goal */}
+
         <div className="stat-card">
 
           <span>🎯</span>
@@ -146,6 +177,7 @@ function Dashboard() {
         </div>
 
       </div>
+
 
       {/* Today's Focus */}
       <div className="focus-section">
@@ -167,6 +199,7 @@ function Dashboard() {
           </div>
 
         </div>
+
 
         <div className="focus-item">
 

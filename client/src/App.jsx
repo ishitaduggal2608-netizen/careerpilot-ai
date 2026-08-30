@@ -11,6 +11,10 @@ import Signup from "./pages/Signup";
 import Roadmap from "./pages/Roadmap";
 import DSA from "./pages/DSA";
 import Interview from "./pages/Interview";
+import Profile from "./pages/Profile";
+import Resume from "./pages/Resume";
+import AIAssistant from "./pages/AIAssistant";
+
 
 function LandingPage() {
   return (
@@ -23,6 +27,7 @@ function LandingPage() {
   );
 }
 
+
 function ProtectedRoute({ children }) {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
 
@@ -34,9 +39,11 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+
 function App() {
   return (
     <BrowserRouter>
+
       <Routes>
 
         {/* Landing Page */}
@@ -44,6 +51,21 @@ function App() {
           path="/"
           element={<LandingPage />}
         />
+
+
+        {/* Login */}
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+
+        {/* Signup */}
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
+
 
         {/* Dashboard */}
         <Route
@@ -55,6 +77,7 @@ function App() {
           }
         />
 
+
         {/* Roadmap */}
         <Route
           path="/roadmap"
@@ -65,6 +88,7 @@ function App() {
           }
         />
 
+
         {/* DSA */}
         <Route
           path="/dsa"
@@ -74,27 +98,53 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+
+        {/* Interview */}
         <Route
-  path="/interview"
-  element={
-    <ProtectedRoute>
-      <Interview />
-    </ProtectedRoute>
-  }
-/>
-        {/* Login */}
-        <Route
-          path="/login"
-          element={<Login />}
+          path="/interview"
+          element={
+            <ProtectedRoute>
+              <Interview />
+            </ProtectedRoute>
+          }
         />
 
-        {/* Signup */}
+
+        {/* Profile */}
         <Route
-          path="/signup"
-          element={<Signup />}
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* Resume */}
+        <Route
+          path="/resume"
+          element={
+            <ProtectedRoute>
+              <Resume />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* AI Assistant */}
+        <Route
+          path="/ai-assistant"
+          element={
+            <ProtectedRoute>
+              <AIAssistant />
+            </ProtectedRoute>
+          }
         />
 
       </Routes>
+
     </BrowserRouter>
   );
 }
