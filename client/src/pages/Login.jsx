@@ -1,12 +1,51 @@
 import "./Login.css";
 
 function Login() {
-  const handleLogin = (event) => {
-  event.preventDefault();
+  const handleLogin = async (event) => {
+    event.preventDefault();
 
-  localStorage.setItem("isLoggedIn", "true");
+    const email = event.target.email.value;
+    const password = event.target.password.value;
 
-  window.location.href = "/dashboard";
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+
+      // Save JWT token
+      localStorage.setItem("token", data.token);
+
+      // Save logged-in user
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Keep login status
+      localStorage.setItem("isLoggedIn", "true");
+
+      alert("Login successful!");
+
+      window.location.href = "/dashboard";
+
+    } catch (error) {
+      console.error("Login error:", error);
+
+      alert(
+        "Unable to connect to the server. Please make sure the backend is running."
+      );
+    }
   };
 
   return (
@@ -25,6 +64,7 @@ function Login() {
 
           <input
             type="email"
+            name="email"
             placeholder="Enter your email"
             required
           />
@@ -33,6 +73,7 @@ function Login() {
 
           <input
             type="password"
+            name="password"
             placeholder="Enter your password"
             required
           />
@@ -45,12 +86,14 @@ function Login() {
 
         <p className="signup-text">
           Don't have an account?{" "}
+
           <button
             type="button"
             onClick={() => window.location.href = "/signup"}
           >
             Sign up
           </button>
+
         </p>
 
       </div>

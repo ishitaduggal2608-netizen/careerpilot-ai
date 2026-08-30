@@ -1,20 +1,47 @@
 import "./Signup.css";
 
 function Signup() {
-  const handleSignup = (event) => {
+  const handleSignup = async (event) => {
     event.preventDefault();
 
+    const name = event.target.name.value;
+    const email = event.target.email.value;
     const password = event.target.password.value;
     const confirmPassword = event.target.confirmPassword.value;
 
+    // Check passwords
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    alert("Account created successfully!");
+    try {
+      const response = await fetch("http://localhost:5000/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
 
-    window.location.href = "/login";
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Signup failed!");
+        return;
+      }
+
+      alert("Account created successfully!");
+
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("Could not connect to the server.");
+    }
   };
 
   return (

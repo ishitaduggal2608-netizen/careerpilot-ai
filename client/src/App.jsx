@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+import BackendTest from "./pages/BackendTest";
 import Navbar from "./components/landing/Navbar";
 import Hero from "./components/landing/Hero";
 import Features from "./components/landing/Features";
@@ -15,7 +16,6 @@ import Profile from "./pages/Profile";
 import Resume from "./pages/Resume";
 import AIAssistant from "./pages/AIAssistant";
 
-
 function LandingPage() {
   return (
     <>
@@ -27,18 +27,17 @@ function LandingPage() {
   );
 }
 
-
+// Protected Route
 function ProtectedRoute({ children }) {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const token = localStorage.getItem("token");
 
-  if (!isLoggedIn) {
+  if (!token) {
     window.location.href = "/login";
     return null;
   }
 
   return children;
 }
-
 
 function App() {
   return (
@@ -52,6 +51,11 @@ function App() {
           element={<LandingPage />}
         />
 
+        {/* Backend Test */}
+        <Route
+          path="/backend-test"
+          element={<BackendTest />}
+        />
 
         {/* Login */}
         <Route
@@ -59,13 +63,11 @@ function App() {
           element={<Login />}
         />
 
-
         {/* Signup */}
         <Route
           path="/signup"
           element={<Signup />}
         />
-
 
         {/* Dashboard */}
         <Route
@@ -77,7 +79,6 @@ function App() {
           }
         />
 
-
         {/* Roadmap */}
         <Route
           path="/roadmap"
@@ -87,7 +88,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
 
         {/* DSA */}
         <Route
@@ -99,7 +99,6 @@ function App() {
           }
         />
 
-
         {/* Interview */}
         <Route
           path="/interview"
@@ -109,7 +108,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
 
         {/* Profile */}
         <Route
@@ -121,7 +119,6 @@ function App() {
           }
         />
 
-
         {/* Resume */}
         <Route
           path="/resume"
@@ -131,7 +128,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
 
         {/* AI Assistant */}
         <Route

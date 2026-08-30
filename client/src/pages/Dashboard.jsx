@@ -1,10 +1,16 @@
 import "./Dashboard.css";
 
 function Dashboard() {
+  // Get logged-in user
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    window.location.href = "/login";
-  };
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("isLoggedIn");
+
+  window.location.href = "/login";
+};
 
   const handleRoadmap = () => {
     window.location.href = "/roadmap";
@@ -26,6 +32,10 @@ function Dashboard() {
     window.location.href = "/resume";
   };
 
+  const handleAIAssistant = () => {
+    window.location.href = "/ai-assistant";
+  };
+
   return (
     <div className="dashboard">
 
@@ -33,7 +43,9 @@ function Dashboard() {
       <div className="dashboard-header">
 
         <div>
-          <p className="welcome">Welcome back 👋</p>
+          <p className="welcome">
+            Welcome back, {user?.name || "there"} 👋
+          </p>
 
           <h1>Your Placement Dashboard</h1>
 
@@ -45,9 +57,9 @@ function Dashboard() {
         <div className="header-right">
 
           <div className="brand-logo">
-  <span className="brand-icon">✦</span>
-  <span className="brand-name">CareerPilot AI</span>
-</div>
+            <span className="brand-icon">✦</span>
+            <span className="brand-name">CareerPilot AI</span>
+          </div>
 
           <button
             className="roadmap-button"
@@ -85,11 +97,11 @@ function Dashboard() {
           </button>
 
           <button
-  className="ai-button"
-  onClick={() => window.location.href = "/ai-assistant"}
->
-  ✦ AI Assistant
-</button>
+            className="ai-button"
+            onClick={handleAIAssistant}
+          >
+            ✦ AI Assistant
+          </button>
 
           <button
             className="logout-button"
@@ -101,7 +113,6 @@ function Dashboard() {
         </div>
 
       </div>
-
 
       {/* Placement Readiness */}
       <div className="readiness-card">
@@ -128,7 +139,6 @@ function Dashboard() {
 
       </div>
 
-
       {/* Statistics */}
       <div className="stats-grid">
 
@@ -146,7 +156,6 @@ function Dashboard() {
 
         </div>
 
-
         <div className="stat-card">
 
           <span>🤖</span>
@@ -160,7 +169,6 @@ function Dashboard() {
           </small>
 
         </div>
-
 
         <div className="stat-card">
 
@@ -177,7 +185,6 @@ function Dashboard() {
         </div>
 
       </div>
-
 
       {/* Today's Focus */}
       <div className="focus-section">
@@ -199,7 +206,6 @@ function Dashboard() {
           </div>
 
         </div>
-
 
         <div className="focus-item">
 
