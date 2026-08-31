@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Profile.css";
 
 function Profile() {
   const [profile, setProfile] = useState({
-    name: "CareerPilot User",
-    email: "user@example.com",
+    name: "",
+    email: "",
     college: "",
     degree: "",
     skills: "",
@@ -13,60 +13,305 @@ function Profile() {
   });
 
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // ==========================================
+  // FETCH PROFILE
+  // ==========================================
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/profile",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          logout();
+          return;
+        }
+
+        alert(data.message || "Unable to fetch profile.");
+        return;
+      }
+
+      if (data.profile) {
+        setProfile({
+          name: data.profile.name || "",
+          email: data.profile.email || "",
+          college: data.profile.college || "",
+          degree: data.profile.degree || "",
+          skills: data.profile.skills || "",
+          careerGoal:
+            data.profile.careerGoal || "Software Developer",
+          experience:
+            data.profile.experience || "Fresher",
+        });
+
+        // Keep localStorage user information synchronized
+        updateLocalUser(data.profile);
+      }
+    } catch (error) {
+      console.error("Profile fetch error:", error);
+
+      alert(
+        "Unable to connect to the server. Please make sure the backend is running."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ==========================================
+  // LOGOUT
+  // ==========================================
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("isLoggedIn");
+
+    window.location.href = "/login";
+  };
+
+  // ==========================================
+  // UPDATE LOCAL USER
+  // ==========================================
+
+  const updateLocalUser = (userData) => {
+    const existingUser = localStorage.getItem("user");
+
+    let oldUser = {};
+
+    try {
+      oldUser = existingUser
+        ? JSON.parse(existingUser)
+        : {};
+    } catch {
+      oldUser = {};
+    }
+
+    const updatedUser = {
+      ...oldUser,
+      id: userData._id || oldUser.id,
+      name: userData.name,
+      email: userData.email,
+    };
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(updatedUser)
+    );
+  };
+
+  // ==========================================
+  // HANDLE INPUT CHANGE
+  // ==========================================
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    setProfile({
-      ...profile,
+    setProfile((currentProfile) => ({
+      ...currentProfile,
       [name]: value,
-    });
+    }));
 
     setSaved(false);
   };
 
-  const handleSave = (event) => {
+  // ==========================================
+  // SAVE PROFILE
+  // ==========================================
+
+  const handleSave = async (event) => {
     event.preventDefault();
 
-    localStorage.setItem(
-      "careerPilotProfile",
-      JSON.stringify(profile)
-    );
+    const token = localStorage.getItem("token");
 
-    setSaved(true);
+    if (!token) {
+      alert("Please login again.");
+      logout();
+      return;
+    }
+
+    // Basic validation
+    if (!profile.name.trim()) {
+      alert("Please enter your name.");
+      return;
+    }
+
+    if (!profile.email.trim()) {
+      alert("Please enter your email.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setSaved(false);
+
+      const response = await fetch(
+        "http://localhost:5000/api/profile",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: profile.name.trim(),
+            email: profile.email.trim(),
+            college: profile.college.trim(),
+            degree: profile.degree.trim(),
+            skills: profile.skills.trim(),
+            careerGoal: profile.careerGoal,
+            experience: profile.experience,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      console.log("PROFILE SAVE RESPONSE:", data);
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          logout();
+          return;
+        }
+
+        alert(data.message || "Unable to save profile.");
+        return;
+      }
+
+      // ==========================================
+      // IMPORTANT:
+      // Update React state immediately from backend
+      // ==========================================
+
+      if (data.profile) {
+        const updatedProfile = {
+          name: data.profile.name || "",
+          email: data.profile.email || "",
+          college: data.profile.college || "",
+          degree: data.profile.degree || "",
+          skills: data.profile.skills || "",
+          careerGoal:
+            data.profile.careerGoal ||
+            "Software Developer",
+          experience:
+            data.profile.experience ||
+            "Fresher",
+        };
+
+        setProfile(updatedProfile);
+
+        // Update localStorage as well
+        updateLocalUser(data.profile);
+      }
+
+      setSaved(true);
+
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setSaved(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Profile save error:", error);
+
+      alert(
+        "Unable to connect to the server. Please make sure the backend is running."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
+
+  // ==========================================
+  // LOADING SCREEN
+  // ==========================================
+
+  if (loading) {
+    return (
+      <div className="profile-page">
+        <div className="profile-card">
+          <h2>Loading profile...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // UI
+  // ==========================================
 
   return (
     <div className="profile-page">
 
-      {/* Header */}
-      <div className="profile-header">
-        <div>
-          <p className="profile-label">My Profile</p>
+      {/* ================================
+          HEADER
+      ================================= */}
 
-          <h1>Build Your Career Profile</h1>
+      <div className="profile-header">
+
+        <div>
+          <p className="profile-label">
+            My Profile
+          </p>
+
+          <h1>
+            Build Your Career Profile
+          </h1>
 
           <p>
-            Add your details so CareerPilot can personalize
-            your career preparation.
+            Add your details so CareerPilot can
+            personalize your career preparation.
           </p>
         </div>
 
         <div className="profile-avatar">
           CP
         </div>
+
       </div>
 
-      {/* Profile Form */}
+
+      {/* ================================
+          PROFILE FORM
+      ================================= */}
+
       <div className="profile-card">
 
         <form onSubmit={handleSave}>
 
           <div className="form-grid">
 
-            {/* Name */}
+            {/* NAME */}
+
             <div className="form-group">
-              <label>Full Name</label>
+
+              <label>
+                Full Name
+              </label>
 
               <input
                 type="text"
@@ -76,11 +321,17 @@ function Profile() {
                 placeholder="Enter your name"
                 required
               />
+
             </div>
 
-            {/* Email */}
+
+            {/* EMAIL */}
+
             <div className="form-group">
-              <label>Email</label>
+
+              <label>
+                Email
+              </label>
 
               <input
                 type="email"
@@ -90,11 +341,17 @@ function Profile() {
                 placeholder="Enter your email"
                 required
               />
+
             </div>
 
-            {/* College */}
+
+            {/* COLLEGE */}
+
             <div className="form-group">
-              <label>College / University</label>
+
+              <label>
+                College / University
+              </label>
 
               <input
                 type="text"
@@ -103,11 +360,17 @@ function Profile() {
                 onChange={handleChange}
                 placeholder="Enter your college"
               />
+
             </div>
 
-            {/* Degree */}
+
+            {/* DEGREE */}
+
             <div className="form-group">
-              <label>Degree</label>
+
+              <label>
+                Degree
+              </label>
 
               <input
                 type="text"
@@ -116,48 +379,99 @@ function Profile() {
                 onChange={handleChange}
                 placeholder="e.g. B.Tech Computer Science"
               />
+
             </div>
 
-            {/* Career Goal */}
+
+            {/* CAREER GOAL */}
+
             <div className="form-group">
-              <label>Career Goal</label>
+
+              <label>
+                Career Goal
+              </label>
 
               <select
                 name="careerGoal"
                 value={profile.careerGoal}
                 onChange={handleChange}
               >
-                <option>Software Developer</option>
-                <option>Data Scientist</option>
-                <option>Data Analyst</option>
-                <option>Web Developer</option>
-                <option>AI / ML Engineer</option>
-                <option>Cybersecurity Engineer</option>
-                <option>Other</option>
+                <option value="Software Developer">
+                  Software Developer
+                </option>
+
+                <option value="Data Scientist">
+                  Data Scientist
+                </option>
+
+                <option value="Data Analyst">
+                  Data Analyst
+                </option>
+
+                <option value="Web Developer">
+                  Web Developer
+                </option>
+
+                <option value="AI / ML Engineer">
+                  AI / ML Engineer
+                </option>
+
+                <option value="Cybersecurity Engineer">
+                  Cybersecurity Engineer
+                </option>
+
+                <option value="Other">
+                  Other
+                </option>
               </select>
+
             </div>
 
-            {/* Experience */}
+
+            {/* EXPERIENCE */}
+
             <div className="form-group">
-              <label>Experience Level</label>
+
+              <label>
+                Experience Level
+              </label>
 
               <select
                 name="experience"
                 value={profile.experience}
                 onChange={handleChange}
               >
-                <option>Fresher</option>
-                <option>Beginner</option>
-                <option>Intermediate</option>
-                <option>Experienced</option>
+                <option value="Fresher">
+                  Fresher
+                </option>
+
+                <option value="Beginner">
+                  Beginner
+                </option>
+
+                <option value="Intermediate">
+                  Intermediate
+                </option>
+
+                <option value="Experienced">
+                  Experienced
+                </option>
               </select>
+
             </div>
 
           </div>
 
-          {/* Skills */}
+
+          {/* ================================
+              SKILLS
+          ================================= */}
+
           <div className="form-group full-width">
-            <label>Skills</label>
+
+            <label>
+              Skills
+            </label>
 
             <textarea
               name="skills"
@@ -165,14 +479,19 @@ function Profile() {
               onChange={handleChange}
               placeholder="e.g. C, C++, Java, Python, React, SQL"
               rows="4"
-            ></textarea>
+            />
 
             <small>
               Separate multiple skills with commas.
             </small>
+
           </div>
 
-          {/* Save */}
+
+          {/* ================================
+              SAVE BUTTON
+          ================================= */}
+
           <div className="profile-actions">
 
             {saved && (
@@ -184,8 +503,11 @@ function Profile() {
             <button
               type="submit"
               className="save-profile-button"
+              disabled={saving}
             >
-              Save Profile
+              {saving
+                ? "Saving..."
+                : "Save Profile"}
             </button>
 
           </div>

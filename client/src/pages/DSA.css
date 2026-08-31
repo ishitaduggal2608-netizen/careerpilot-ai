@@ -1,63 +1,228 @@
+/* ===============================
+   DSA PAGE
+================================ */
+
 .dsa-page {
   min-height: 100vh;
-  background: #f8fafc;
-  padding: 40px 8%;
-  font-family: Arial, sans-serif;
-  color: #0f172a;
+  background: #f6f8fb;
+  padding: 50px 7%;
+  color: #111827;
+  box-sizing: border-box;
 }
 
-/* Header */
+
+/* ===============================
+   HEADER
+================================ */
 
 .dsa-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 30px;
+  gap: 40px;
   margin-bottom: 25px;
 }
 
 .dsa-label {
   color: #00a63c;
   font-weight: 600;
-  margin: 0 0 8px;
-}
-
-.dsa-header h1 {
-  font-size: 32px;
+  font-size: 16px;
   margin: 0 0 10px;
 }
 
-.dsa-header p:last-child {
-  color: #64748b;
+.dsa-header h1 {
+  font-size: 38px;
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.dsa-header p {
+  color: #60708a;
+  font-size: 17px;
   margin: 0;
-  max-width: 650px;
-  line-height: 1.6;
 }
 
 .dsa-progress {
-  min-width: 130px;
   text-align: right;
+  min-width: 150px;
 }
 
 .dsa-progress span {
   display: block;
-  color: #64748b;
-  font-size: 14px;
-  margin-bottom: 5px;
+  color: #60708a;
+  font-size: 15px;
+  margin-bottom: 8px;
 }
 
 .dsa-progress strong {
-  font-size: 28px;
   color: #00a63c;
+  font-size: 32px;
 }
 
-/* Overall Progress */
+
+/* ===============================
+   LEETCODE CARD
+================================ */
+
+.leetcode-card {
+  background: white;
+  border: 1px solid #dfe5ed;
+  border-radius: 18px;
+  padding: 28px 30px;
+  margin: 30px 0;
+  box-shadow: 0 4px 14px rgba(20, 30, 50, 0.04);
+}
+
+.leetcode-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+}
+
+.leetcode-label {
+  color: #00a63c;
+  font-weight: 600;
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+
+.leetcode-header h2 {
+  margin: 0 0 8px;
+  font-size: 23px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.leetcode-header p {
+  margin: 0;
+  color: #60708a;
+  font-size: 15px;
+}
+
+.leetcode-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: #111827;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 19px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+
+/* ===============================
+   LEETCODE FORM
+================================ */
+
+.leetcode-form {
+  display: flex;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.leetcode-form input {
+  flex: 1;
+  height: 48px;
+
+  border: 1px solid #d6dce5;
+  border-radius: 10px;
+
+  padding: 0 15px;
+  font-size: 15px;
+
+  outline: none;
+  box-sizing: border-box;
+}
+
+.leetcode-form input:focus {
+  border-color: #00a63c;
+  box-shadow: 0 0 0 3px rgba(0, 166, 60, 0.08);
+}
+
+.leetcode-form button {
+  height: 48px;
+
+  border: none;
+  border-radius: 10px;
+
+  padding: 0 25px;
+
+  background: #00a63c;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.leetcode-form button:hover {
+  background: #008f34;
+}
+
+
+/* ===============================
+   CONNECTED STATE
+================================ */
+
+.leetcode-connected {
+  margin-top: 22px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #f0faf4;
+  border: 1px solid #c9ecd5;
+
+  padding: 17px 20px;
+  border-radius: 12px;
+}
+
+.leetcode-connected span {
+  color: #00a63c;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.leetcode-connected h3 {
+  margin: 5px 0 0;
+  font-size: 18px;
+}
+
+.leetcode-connected button {
+  border: 1px solid #d5dbe4;
+  background: white;
+  color: #444;
+
+  padding: 9px 15px;
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+
+/* ===============================
+   PROGRESS BAR
+================================ */
 
 .dsa-progress-bar {
   width: 100%;
   height: 10px;
+
   background: #e2e8f0;
-  border-radius: 10px;
+
+  border-radius: 20px;
+
   overflow: hidden;
   margin-bottom: 30px;
 }
@@ -65,23 +230,34 @@
 .dsa-progress-fill {
   height: 100%;
   background: #00a63c;
-  border-radius: 10px;
+
+  border-radius: 20px;
+
+  transition: width 0.3s ease;
 }
 
-/* Statistics */
+
+/* ===============================
+   STATISTICS
+================================ */
 
 .dsa-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 24px;
+  gap: 20px;
+
+  margin-bottom: 30px;
 }
 
 .dsa-stat-card {
   background: white;
-  border: 1px solid #e2e8f0;
+
+  border: 1px solid #dfe5ed;
   border-radius: 16px;
-  padding: 22px;
+
+  padding: 25px;
+
+  box-shadow: 0 3px 12px rgba(20, 30, 50, 0.03);
 }
 
 .dsa-stat-card span {
@@ -89,35 +265,104 @@
 }
 
 .dsa-stat-card p {
-  color: #64748b;
-  margin: 12px 0 8px;
+  color: #60708a;
+  margin: 18px 0 7px;
+  font-size: 15px;
 }
 
 .dsa-stat-card h2 {
   margin: 0;
-  font-size: 25px;
+  font-size: 29px;
+  font-weight: 600;
 }
 
-/* DSA Section */
 
-.dsa-section {
+/* ===============================
+   LEETCODE STATS
+================================ */
+
+.leetcode-stats {
   background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 25px;
+
+  border: 1px solid #dfe5ed;
+  border-radius: 18px;
+
+  padding: 28px 30px;
+  margin-bottom: 30px;
+
+  box-shadow: 0 4px 14px rgba(20, 30, 50, 0.04);
 }
 
-.dsa-section-header h2 {
-  margin: 0 0 6px;
+.leetcode-stats .dsa-section-header {
+  margin-bottom: 22px;
+}
+
+.leetcode-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.leetcode-stat-card {
+  background: #f8fafc;
+
+  border: 1px solid #e3e8ef;
+  border-radius: 12px;
+
+  padding: 20px;
+}
+
+.leetcode-stat-card span {
   font-size: 20px;
 }
 
-.dsa-section-header p {
-  margin: 0 0 20px;
-  color: #64748b;
+.leetcode-stat-card p {
+  color: #60708a;
+  font-size: 14px;
+  margin: 12px 0 5px;
 }
 
-/* Topics */
+.leetcode-stat-card h2 {
+  margin: 0;
+  font-size: 25px;
+}
+
+
+/* ===============================
+   DSA SECTION
+================================ */
+
+.dsa-section {
+  background: white;
+
+  border: 1px solid #dfe5ed;
+  border-radius: 18px;
+
+  padding: 28px 30px;
+
+  box-shadow: 0 4px 14px rgba(20, 30, 50, 0.04);
+}
+
+.dsa-section-header {
+  margin-bottom: 22px;
+}
+
+.dsa-section-header h2 {
+  margin: 0 0 8px;
+  font-size: 23px;
+  font-weight: 600;
+}
+
+.dsa-section-header p {
+  margin: 0;
+  color: #60708a;
+  font-size: 15px;
+}
+
+
+/* ===============================
+   TOPIC LIST
+================================ */
 
 .dsa-topic-list {
   display: flex;
@@ -125,78 +370,103 @@
 }
 
 .dsa-topic {
-  padding: 20px 0;
-  border-top: 1px solid #e2e8f0;
+  padding: 22px 0;
+
+  border-top: 1px solid #e5e9ef;
 }
 
 .topic-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+
+  margin-bottom: 13px;
 }
 
 .topic-title {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 15px;
 }
 
 .topic-number {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
+  width: 42px;
+  height: 42px;
+
   border-radius: 50%;
-  background: #f1f5f9;
-  color: #64748b;
+
+  background: #f0f4f8;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+
+  color: #60708a;
+  font-weight: 600;
 }
 
 .topic-title h3 {
   margin: 0 0 5px;
   font-size: 17px;
+  font-weight: 600;
 }
 
 .topic-title p {
   margin: 0;
-  color: #64748b;
+  color: #60708a;
   font-size: 14px;
 }
 
-.topic-info > strong {
+.topic-info strong {
   color: #00a63c;
+  font-size: 17px;
 }
 
-/* Topic Progress */
+
+/* ===============================
+   TOPIC PROGRESS
+================================ */
 
 .topic-progress-bar {
+  width: 100%;
   height: 8px;
+
   background: #e2e8f0;
-  border-radius: 10px;
+
+  border-radius: 20px;
+
   overflow: hidden;
-  margin-top: 15px;
 }
 
 .topic-progress-fill {
   height: 100%;
+
   background: #00a63c;
-  border-radius: 10px;
+
+  border-radius: 20px;
 }
 
-/* Button */
+
+/* ===============================
+   TOPIC BUTTON
+================================ */
 
 .topic-button {
   margin-top: 15px;
-  padding: 8px 15px;
-  background: white;
-  color: #00a63c;
-  border: 1px solid #00a63c;
+
+  padding: 9px 16px;
+
   border-radius: 8px;
+
+  border: 1px solid #00a63c;
+
+  background: white;
+
+  color: #00a63c;
+
   font-size: 14px;
   font-weight: 600;
+
   cursor: pointer;
 }
 
@@ -205,18 +475,29 @@
   color: white;
 }
 
-/* Completed Topic */
+
+/* ===============================
+   COMPLETED TOPIC
+================================ */
 
 .topic-completed .topic-number {
-  background: #dcfce7;
-  color: #00a63c;
+  background: #00a63c;
+  color: white;
 }
 
-/* Responsive */
+.topic-completed {
+  opacity: 0.9;
+}
 
-@media (max-width: 800px) {
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 900px) {
+
   .dsa-page {
-    padding: 25px 5%;
+    padding: 35px 5%;
   }
 
   .dsa-header {
@@ -227,11 +508,47 @@
     text-align: left;
   }
 
-  .dsa-header h1 {
-    font-size: 26px;
-  }
-
   .dsa-stats {
     grid-template-columns: 1fr;
   }
+
+  .leetcode-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .dsa-page {
+    padding: 25px 20px;
+  }
+
+  .dsa-header h1 {
+    font-size: 30px;
+  }
+
+  .leetcode-card,
+  .leetcode-stats,
+  .dsa-section {
+    padding: 22px;
+  }
+
+  .leetcode-form {
+    flex-direction: column;
+  }
+
+  .leetcode-form button {
+    width: 100%;
+  }
+
+  .leetcode-header {
+    align-items: flex-start;
+  }
+
+  .leetcode-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
 }
