@@ -1208,6 +1208,149 @@ app.put(
     }
   }
 );
+// =====================================================
+// GET INTERVIEW DATA
+// =====================================================
+
+app.get(
+  "/api/interview",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const db = client.db("CareerPilot");
+      const usersCollection = db.collection("users");
+
+      const user = await usersCollection.findOne(
+        {
+          _id: new ObjectId(req.user.userId),
+        },
+        {
+          projection: {
+            interview: 1,
+          },
+        }
+      );
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+
+      res.json({
+        interview: user.interview || {
+          categories: {
+            technical: false,
+            hr: false,
+            mock: false,
+          },
+        },
+      });
+    } catch (error) {
+      console.error(
+        "Get interview error:",
+        error
+      );
+
+      res.status(500).json({
+        message:
+          "Something went wrong while fetching interview data.",
+      });
+    }
+  }
+);
+
+// =====================================================
+// UPDATE INTERVIEW CATEGORY
+// =====================================================
+
+app.put(
+  "/api/interview/category",
+  authenticateToken,
+  async (req, res) => {
+    const { category, completed } = req.body;
+
+    try {
+      if (
+        !category ||
+        completed === undefined
+      ) {
+        return res.status(400).json({
+          message:
+            "Category and completion status are required.",
+        });
+      }
+
+      const allowedCategories = [
+        "technical",
+        "hr",
+        "mock",
+      ];
+
+      if (!allowedCategories.includes(category)) {
+        return res.status(400).json({
+          message:
+            "Invalid interview category.",
+        });
+      }
+
+      const db = client.db("CareerPilot");
+      const usersCollection = db.collection("users");
+
+      const userId = new ObjectId(
+        req.user.userId
+      );
+
+      await usersCollection.updateOne(
+        {
+          _id: userId,
+        },
+        {
+          $set: {
+            [`interview.categories.${category}`]:
+              Boolean(completed),
+          },
+        }
+      );
+
+      const updatedUser =
+        await usersCollection.findOne(
+          {
+            _id: userId,
+          },
+          {
+            projection: {
+              interview: 1,
+            },
+          }
+        );
+
+      res.json({
+        message:
+          "Interview progress updated successfully.",
+
+        interview:
+          updatedUser?.interview || {
+            categories: {
+              technical: false,
+              hr: false,
+              mock: false,
+            },
+          },
+      });
+    } catch (error) {
+      console.error(
+        "Update interview category error:",
+        error
+      );
+
+      res.status(500).json({
+        message:
+          "Something went wrong while updating interview progress.",
+      });
+    }
+  }
+);
 
 // =====================================================
 // CONNECT TO MONGODB
