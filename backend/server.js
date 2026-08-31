@@ -97,32 +97,73 @@ app.post("/api/signup", async (req, res) => {
       email,
       password: hashedPassword,
 
-      // Profile
+      // =================================================
+      // PROFILE
+      // =================================================
+
       college: "",
       degree: "",
       skills: "",
       careerGoal: "Software Developer",
       experience: "Fresher",
 
+      // =================================================
       // DSA
+      // =================================================
+
       dsa: {
-  topicCompletion: {},
-},
+        topicCompletion: {},
+      },
 
-roadmap: {
-  stepCompletion: {
-    "1": true,
-    "2": false,
-    "3": false,
-    "4": false,
-    "5": false,
-  },
-},
+      // =================================================
+      // ROADMAP
+      // =================================================
 
-leetcodeUsername: "",
+      roadmap: {
+        stepCompletion: {
+          "1": true,
+          "2": false,
+          "3": false,
+          "4": false,
+          "5": false,
+        },
+      },
 
-      // LeetCode
+      // =================================================
+      // INTERVIEW
+      // =================================================
+
+      interview: {
+        categories: {
+          technical: false,
+          hr: false,
+          mock: false,
+        },
+      },
+
+      // =================================================
+      // LEETCODE
+      // =================================================
+
       leetcodeUsername: "",
+
+      // =================================================
+      // RESUME
+      // =================================================
+
+      resume: {
+        name: "",
+        email: "",
+        phone: "",
+        location: "",
+        linkedin: "",
+        github: "",
+        summary: "",
+        education: "",
+        skills: "",
+        projects: "",
+        experience: "",
+      },
 
       createdAt: new Date(),
     };
@@ -248,10 +289,7 @@ app.get(
         profile: user,
       });
     } catch (error) {
-      console.error(
-        "Get profile error:",
-        error
-      );
+      console.error("Get profile error:", error);
 
       res.status(500).json({
         message:
@@ -289,9 +327,7 @@ app.put(
       const db = client.db("CareerPilot");
       const usersCollection = db.collection("users");
 
-      const userId = new ObjectId(
-        req.user.userId
-      );
+      const userId = new ObjectId(req.user.userId);
 
       const existingUser =
         await usersCollection.findOne({
@@ -353,6 +389,184 @@ app.put(
       res.status(500).json({
         message:
           "Something went wrong while updating profile.",
+      });
+    }
+  }
+);
+
+// =====================================================
+// GET RESUME API
+// =====================================================
+
+app.get(
+  "/api/resume",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const db = client.db("CareerPilot");
+      const usersCollection = db.collection("users");
+
+      const user = await usersCollection.findOne(
+        {
+          _id: new ObjectId(req.user.userId),
+        },
+        {
+          projection: {
+            resume: 1,
+          },
+        }
+      );
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+
+      res.json({
+        resume:
+          user.resume || {
+            name: "",
+            email: "",
+            phone: "",
+            location: "",
+            linkedin: "",
+            github: "",
+            summary: "",
+            education: "",
+            skills: "",
+            projects: "",
+            experience: "",
+          },
+      });
+    } catch (error) {
+      console.error(
+        "Get resume error:",
+        error
+      );
+
+      res.status(500).json({
+        message:
+          "Something went wrong while fetching resume.",
+      });
+    }
+  }
+);
+
+// =====================================================
+// SAVE / UPDATE RESUME API
+// =====================================================
+
+app.put(
+  "/api/resume",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const db = client.db("CareerPilot");
+      const usersCollection = db.collection("users");
+
+      const userId = new ObjectId(req.user.userId);
+
+      const user = await usersCollection.findOne({
+        _id: userId,
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+
+      const resume = {
+        name: req.body.name || "",
+        email: req.body.email || "",
+        phone: req.body.phone || "",
+        location: req.body.location || "",
+        linkedin: req.body.linkedin || "",
+        github: req.body.github || "",
+        summary: req.body.summary || "",
+        education: req.body.education || "",
+        skills: req.body.skills || "",
+        projects: req.body.projects || "",
+        experience: req.body.experience || "",
+      };
+
+      await usersCollection.updateOne(
+        {
+          _id: userId,
+        },
+        {
+          $set: {
+            resume,
+          },
+        }
+      );
+
+      res.json({
+        message: "Resume saved successfully.",
+        resume,
+      });
+    } catch (error) {
+      console.error(
+        "Save resume error:",
+        error
+      );
+
+      res.status(500).json({
+        message:
+          "Something went wrong while saving resume.",
+      });
+    }
+  }
+);
+
+// =====================================================
+// DELETE RESUME API
+// =====================================================
+
+app.delete(
+  "/api/resume",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const db = client.db("CareerPilot");
+      const usersCollection = db.collection("users");
+
+      const userId = new ObjectId(req.user.userId);
+
+      const user = await usersCollection.findOne({
+        _id: userId,
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+
+      await usersCollection.updateOne(
+        {
+          _id: userId,
+        },
+        {
+          $unset: {
+            resume: "",
+          },
+        }
+      );
+
+      res.json({
+        message: "Resume deleted successfully.",
+      });
+    } catch (error) {
+      console.error(
+        "Delete resume error:",
+        error
+      );
+
+      res.status(500).json({
+        message:
+          "Something went wrong while deleting resume.",
       });
     }
   }
@@ -470,7 +684,7 @@ app.put(
 );
 
 // =====================================================
-// DISCONNECT LEETCODE
+// DELETE / DISCONNECT LEETCODE
 // =====================================================
 
 app.delete(
@@ -514,7 +728,7 @@ app.delete(
 );
 
 // =====================================================
-// GET LEETCODE USER STATISTICS
+// GET LEETCODE STATISTICS
 // =====================================================
 
 app.get(
@@ -525,10 +739,6 @@ app.get(
       const db = client.db("CareerPilot");
       const usersCollection =
         db.collection("users");
-
-      // -----------------------------------------------
-      // FIND USER
-      // -----------------------------------------------
 
       const user =
         await usersCollection.findOne(
@@ -559,10 +769,6 @@ app.get(
 
       const username =
         user.leetcodeUsername;
-
-      // -----------------------------------------------
-      // LEETCODE GRAPHQL QUERY
-      // -----------------------------------------------
 
       const query = `
         query getUserStats($username: String!) {
@@ -598,47 +804,34 @@ app.get(
           },
         });
 
-      // -----------------------------------------------
-      // LEETCODE REQUEST OPTIONS
-      // -----------------------------------------------
-
       const options = {
         hostname: "leetcode.com",
         path: "/graphql/",
         method: "POST",
 
         headers: {
-          "Content-Type":
-            "application/json",
+          "Content-Type": "application/json",
 
           "Content-Length":
-            Buffer.byteLength(
-              requestBody
-            ),
+            Buffer.byteLength(requestBody),
 
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151.0.0.0 Safari/537.36",
 
-          "Accept":
-            "application/json",
+          Accept: "application/json",
 
-          "Origin":
+          Origin:
             "https://leetcode.com",
 
-          "Referer":
+          Referer:
             "https://leetcode.com/",
         },
       };
-
-      // -----------------------------------------------
-      // SEND REQUEST
-      // -----------------------------------------------
 
       const leetcodeRequest =
         https.request(
           options,
           (leetcodeResponse) => {
-
             let data = "";
 
             leetcodeResponse.on(
@@ -651,28 +844,16 @@ app.get(
             leetcodeResponse.on(
               "end",
               () => {
-
                 try {
-
                   console.log(
                     "LeetCode HTTP Status:",
                     leetcodeResponse.statusCode
                   );
 
-                  console.log(
-                    "LeetCode Response:",
-                    data.substring(0, 2000)
-                  );
-
                   const result =
                     JSON.parse(data);
 
-                  // -----------------------------------------
-                  // GRAPHQL ERROR
-                  // -----------------------------------------
-
                   if (result.errors) {
-
                     console.error(
                       "LeetCode GraphQL errors:",
                       JSON.stringify(
@@ -692,28 +873,22 @@ app.get(
                     });
                   }
 
-                  // -----------------------------------------
-                  // CHECK USER
-                  // -----------------------------------------
-
                   if (
                     !result.data ||
                     !result.data.matchedUser
                   ) {
-
                     return res.status(404).json({
                       message:
                         "LeetCode username not found.",
                     });
-
                   }
 
                   const matchedUser =
                     result.data.matchedUser;
 
-                  // -----------------------------------------
+                  // =================================================
                   // SOLVED PROBLEMS
-                  // -----------------------------------------
+                  // =================================================
 
                   const submissions =
                     matchedUser
@@ -728,7 +903,6 @@ app.get(
 
                   submissions.forEach(
                     (item) => {
-
                       const count =
                         Number(item.count) || 0;
 
@@ -762,9 +936,9 @@ app.get(
                     }
                   );
 
-                  // -----------------------------------------
+                  // =================================================
                   // TOTAL QUESTIONS
-                  // -----------------------------------------
+                  // =================================================
 
                   const questionCounts =
                     result.data
@@ -778,7 +952,6 @@ app.get(
 
                   questionCounts.forEach(
                     (item) => {
-
                       const count =
                         Number(item.count) || 0;
 
@@ -816,10 +989,6 @@ app.get(
                     }
                   );
 
-                  // -----------------------------------------
-                  // FALLBACK TOTAL
-                  // -----------------------------------------
-
                   if (
                     totalQuestions === 0
                   ) {
@@ -829,77 +998,61 @@ app.get(
                       hardQuestions;
                   }
 
-                  // -----------------------------------------
-                  // SEND DATA TO FRONTEND
-                  // -----------------------------------------
+                  // =================================================
+                  // RESPONSE
+                  // =================================================
 
                   res.json({
-
                     username:
                       matchedUser.username,
 
-                    // SOLVED
                     totalSolved,
                     easySolved,
                     mediumSolved,
                     hardSolved,
 
-                    // AVAILABLE QUESTIONS
                     totalQuestions,
                     easyQuestions,
                     mediumQuestions,
                     hardQuestions,
 
-                    // RANK
                     ranking:
                       matchedUser
                         .profile
                         ?.ranking ||
                       null,
                   });
-
                 } catch (error) {
-
                   console.error(
                     "LeetCode response parsing error:",
                     error
                   );
 
-                  if (
-                    !res.headersSent
-                  ) {
+                  if (!res.headersSent) {
                     res.status(500).json({
                       message:
                         "Unable to process LeetCode statistics.",
                     });
                   }
-
                 }
               }
             );
           }
         );
 
-      // -----------------------------------------------
-      // REQUEST ERROR
-      // -----------------------------------------------
-
       leetcodeRequest.on(
         "error",
         (error) => {
-
           console.error(
             "LeetCode request error:",
             error
           );
 
           if (!res.headersSent) {
-
             res.status(500).json({
               message:
                 "Unable to connect to LeetCode.",
             });
-
           }
         }
       );
@@ -909,21 +1062,17 @@ app.get(
       );
 
       leetcodeRequest.end();
-
     } catch (error) {
-
       console.error(
         "LeetCode stats error:",
         error
       );
 
       if (!res.headersSent) {
-
         res.status(500).json({
           message:
             "Something went wrong while fetching LeetCode statistics.",
         });
-
       }
     }
   }
@@ -937,11 +1086,8 @@ app.get(
   "/api/dsa",
   authenticateToken,
   async (req, res) => {
-
     try {
-
       const db = client.db("CareerPilot");
-
       const usersCollection =
         db.collection("users");
 
@@ -960,24 +1106,18 @@ app.get(
         );
 
       if (!user) {
-
         return res.status(404).json({
           message: "User not found.",
         });
-
       }
 
       res.json({
-
         dsa:
           user.dsa || {
             topicCompletion: {},
           },
-
       });
-
     } catch (error) {
-
       console.error(
         "Get DSA error:",
         error
@@ -987,37 +1127,32 @@ app.get(
         message:
           "Something went wrong while fetching DSA data.",
       });
-
     }
   }
 );
 
 // =====================================================
-// UPDATE DSA TOPIC COMPLETION
+// UPDATE DSA TOPIC
 // =====================================================
 
 app.put(
   "/api/dsa/topic",
   authenticateToken,
   async (req, res) => {
-
     const {
       topicId,
       completed,
     } = req.body;
 
     try {
-
       if (
         topicId === undefined ||
         completed === undefined
       ) {
-
         return res.status(400).json({
           message:
             "Topic ID and completion status are required.",
         });
-
       }
 
       const db =
@@ -1056,7 +1191,6 @@ app.put(
         );
 
       res.json({
-
         message:
           "Topic completion updated successfully.",
 
@@ -1065,11 +1199,8 @@ app.put(
             ?.dsa
             ?.topicCompletion ||
           {},
-
       });
-
     } catch (error) {
-
       console.error(
         "Update DSA topic error:",
         error
@@ -1079,10 +1210,10 @@ app.put(
         message:
           "Something went wrong while updating DSA topic.",
       });
-
     }
   }
 );
+
 // =====================================================
 // GET ROADMAP DATA
 // =====================================================
@@ -1092,19 +1223,25 @@ app.get(
   authenticateToken,
   async (req, res) => {
     try {
-      const db = client.db("CareerPilot");
-      const usersCollection = db.collection("users");
+      const db =
+        client.db("CareerPilot");
 
-      const user = await usersCollection.findOne(
-        {
-          _id: new ObjectId(req.user.userId),
-        },
-        {
-          projection: {
-            roadmap: 1,
+      const usersCollection =
+        db.collection("users");
+
+      const user =
+        await usersCollection.findOne(
+          {
+            _id: new ObjectId(
+              req.user.userId
+            ),
           },
-        }
-      );
+          {
+            projection: {
+              roadmap: 1,
+            },
+          }
+        );
 
       if (!user) {
         return res.status(404).json({
@@ -1113,18 +1250,22 @@ app.get(
       }
 
       res.json({
-        roadmap: user.roadmap || {
-          stepCompletion: {
-            "1": true,
-            "2": false,
-            "3": false,
-            "4": false,
-            "5": false,
+        roadmap:
+          user.roadmap || {
+            stepCompletion: {
+              "1": true,
+              "2": false,
+              "3": false,
+              "4": false,
+              "5": false,
+            },
           },
-        },
       });
     } catch (error) {
-      console.error("Get roadmap error:", error);
+      console.error(
+        "Get roadmap error:",
+        error
+      );
 
       res.status(500).json({
         message:
@@ -1142,7 +1283,10 @@ app.put(
   "/api/roadmap/step",
   authenticateToken,
   async (req, res) => {
-    const { stepId, completed } = req.body;
+    const {
+      stepId,
+      completed,
+    } = req.body;
 
     try {
       if (
@@ -1155,12 +1299,16 @@ app.put(
         });
       }
 
-      const db = client.db("CareerPilot");
-      const usersCollection = db.collection("users");
+      const db =
+        client.db("CareerPilot");
 
-      const userId = new ObjectId(
-        req.user.userId
-      );
+      const usersCollection =
+        db.collection("users");
+
+      const userId =
+        new ObjectId(
+          req.user.userId
+        );
 
       await usersCollection.updateOne(
         {
@@ -1208,6 +1356,7 @@ app.put(
     }
   }
 );
+
 // =====================================================
 // GET INTERVIEW DATA
 // =====================================================
@@ -1217,19 +1366,25 @@ app.get(
   authenticateToken,
   async (req, res) => {
     try {
-      const db = client.db("CareerPilot");
-      const usersCollection = db.collection("users");
+      const db =
+        client.db("CareerPilot");
 
-      const user = await usersCollection.findOne(
-        {
-          _id: new ObjectId(req.user.userId),
-        },
-        {
-          projection: {
-            interview: 1,
+      const usersCollection =
+        db.collection("users");
+
+      const user =
+        await usersCollection.findOne(
+          {
+            _id: new ObjectId(
+              req.user.userId
+            ),
           },
-        }
-      );
+          {
+            projection: {
+              interview: 1,
+            },
+          }
+        );
 
       if (!user) {
         return res.status(404).json({
@@ -1238,13 +1393,14 @@ app.get(
       }
 
       res.json({
-        interview: user.interview || {
-          categories: {
-            technical: false,
-            hr: false,
-            mock: false,
+        interview:
+          user.interview || {
+            categories: {
+              technical: false,
+              hr: false,
+              mock: false,
+            },
           },
-        },
       });
     } catch (error) {
       console.error(
@@ -1268,7 +1424,10 @@ app.put(
   "/api/interview/category",
   authenticateToken,
   async (req, res) => {
-    const { category, completed } = req.body;
+    const {
+      category,
+      completed,
+    } = req.body;
 
     try {
       if (
@@ -1287,19 +1446,27 @@ app.put(
         "mock",
       ];
 
-      if (!allowedCategories.includes(category)) {
+      if (
+        !allowedCategories.includes(
+          category
+        )
+      ) {
         return res.status(400).json({
           message:
             "Invalid interview category.",
         });
       }
 
-      const db = client.db("CareerPilot");
-      const usersCollection = db.collection("users");
+      const db =
+        client.db("CareerPilot");
 
-      const userId = new ObjectId(
-        req.user.userId
-      );
+      const usersCollection =
+        db.collection("users");
+
+      const userId =
+        new ObjectId(
+          req.user.userId
+        );
 
       await usersCollection.updateOne(
         {
@@ -1357,24 +1524,18 @@ app.put(
 // =====================================================
 
 async function connectDB() {
-
   try {
-
     await client.connect();
 
     console.log(
       "MongoDB connected successfully!"
     );
-
   } catch (error) {
-
     console.error(
       "MongoDB connection failed:",
       error
     );
-
   }
-
 }
 
 connectDB();
@@ -1386,10 +1547,8 @@ connectDB();
 app.listen(
   PORT,
   () => {
-
     console.log(
       `CareerPilot backend running on port ${PORT}`
     );
-
   }
 );
