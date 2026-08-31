@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Resume.css";
 
 function Resume() {
-  const [resume, setResume] = useState({
+  const emptyResume = {
     name: "",
     email: "",
     phone: "",
@@ -14,9 +14,73 @@ function Resume() {
     skills: "",
     projects: "",
     experience: "",
-  });
+  };
 
+  const [resume, setResume] = useState(emptyResume);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // =====================================================
+  // GET RESUME FROM MONGODB
+  // =====================================================
+
+  useEffect(() => {
+    const fetchResume = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/resume",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert(data.message);
+
+          if (
+            response.status === 401 ||
+            response.status === 403
+          ) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("isLoggedIn");
+
+            window.location.href = "/login";
+          }
+
+          return;
+        }
+
+        setResume(data.resume || emptyResume);
+      } catch (error) {
+        console.error("Get resume error:", error);
+
+        alert(
+          "Unable to connect to the server. Please make sure the backend is running."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResume();
+  }, []);
+
+  // =====================================================
+  // HANDLE INPUT CHANGE
+  // =====================================================
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -29,16 +93,93 @@ function Resume() {
     setSaved(false);
   };
 
-  const handleSave = (event) => {
+  // =====================================================
+  // SAVE RESUME TO MONGODB
+  // =====================================================
+
+  const handleSave = async (event) => {
     event.preventDefault();
 
-    localStorage.setItem(
-      "careerPilotResume",
-      JSON.stringify(resume)
-    );
+    const token = localStorage.getItem("token");
 
-    setSaved(true);
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/resume",
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify(resume),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Unable to save resume.");
+
+        if (
+          response.status === 401 ||
+          response.status === 403
+        ) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("isLoggedIn");
+
+          window.location.href = "/login";
+        }
+
+        return;
+      }
+
+      setResume(data.resume);
+      setSaved(true);
+
+    } catch (error) {
+      console.error("Save resume error:", error);
+
+      alert(
+        "Unable to connect to the server. Please make sure the backend is running."
+      );
+    }
   };
+
+  // =====================================================
+  // LOADING
+  // =====================================================
+
+  if (loading) {
+    return (
+      <div className="resume-page">
+        <div className="resume-builder-header">
+          <div>
+            <p className="resume-label">
+              CAREERPILOT AI
+            </p>
+
+            <h1>Resume Builder</h1>
+
+            <p className="resume-description">
+              Loading your resume...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =====================================================
+  // UI
+  // =====================================================
 
   return (
     <div className="resume-page">
@@ -47,9 +188,13 @@ function Resume() {
       <div className="resume-builder-header">
 
         <div>
-          <p className="resume-label">CAREERPILOT AI</p>
+          <p className="resume-label">
+            CAREERPILOT AI
+          </p>
 
-          <h1>Resume Builder</h1>
+          <h1>
+            Resume Builder
+          </h1>
 
           <p className="resume-description">
             Create a professional, placement-ready resume.
@@ -71,8 +216,13 @@ function Resume() {
 
           <div className="editor-heading">
             <div>
-              <h2>Resume Details</h2>
-              <p>Fill in your information below.</p>
+              <h2>
+                Resume Details
+              </h2>
+
+              <p>
+                Fill in your information below.
+              </p>
             </div>
           </div>
 
@@ -83,18 +233,31 @@ function Resume() {
             <div className="editor-section">
 
               <div className="section-title">
-                <span>01</span>
+
+                <span>
+                  01
+                </span>
+
                 <div>
-                  <h3>Personal Information</h3>
-                  <p>Your contact details</p>
+                  <h3>
+                    Personal Information
+                  </h3>
+
+                  <p>
+                    Your contact details
+                  </p>
                 </div>
+
               </div>
 
 
               <div className="input-grid">
 
                 <div className="input-group">
-                  <label>Full Name</label>
+
+                  <label>
+                    Full Name
+                  </label>
 
                   <input
                     type="text"
@@ -104,11 +267,15 @@ function Resume() {
                     placeholder="e.g. Ishita Duggal"
                     required
                   />
+
                 </div>
 
 
                 <div className="input-group">
-                  <label>Email</label>
+
+                  <label>
+                    Email
+                  </label>
 
                   <input
                     type="email"
@@ -118,11 +285,15 @@ function Resume() {
                     placeholder="you@example.com"
                     required
                   />
+
                 </div>
 
 
                 <div className="input-group">
-                  <label>Phone</label>
+
+                  <label>
+                    Phone
+                  </label>
 
                   <input
                     type="tel"
@@ -131,11 +302,15 @@ function Resume() {
                     onChange={handleChange}
                     placeholder="+91 XXXXX XXXXX"
                   />
+
                 </div>
 
 
                 <div className="input-group">
-                  <label>Location</label>
+
+                  <label>
+                    Location
+                  </label>
 
                   <input
                     type="text"
@@ -144,11 +319,15 @@ function Resume() {
                     onChange={handleChange}
                     placeholder="New Delhi, India"
                   />
+
                 </div>
 
 
                 <div className="input-group">
-                  <label>LinkedIn</label>
+
+                  <label>
+                    LinkedIn
+                  </label>
 
                   <input
                     type="text"
@@ -157,11 +336,15 @@ function Resume() {
                     onChange={handleChange}
                     placeholder="linkedin.com/in/yourname"
                   />
+
                 </div>
 
 
                 <div className="input-group">
-                  <label>GitHub</label>
+
+                  <label>
+                    GitHub
+                  </label>
 
                   <input
                     type="text"
@@ -170,6 +353,7 @@ function Resume() {
                     onChange={handleChange}
                     placeholder="github.com/yourusername"
                   />
+
                 </div>
 
               </div>
@@ -181,12 +365,21 @@ function Resume() {
             <div className="editor-section">
 
               <div className="section-title">
-                <span>02</span>
+
+                <span>
+                  02
+                </span>
 
                 <div>
-                  <h3>Professional Summary</h3>
-                  <p>Introduce yourself professionally</p>
+                  <h3>
+                    Professional Summary
+                  </h3>
+
+                  <p>
+                    Introduce yourself professionally
+                  </p>
                 </div>
+
               </div>
 
 
@@ -198,7 +391,7 @@ function Resume() {
                   onChange={handleChange}
                   placeholder="Write 2–4 lines about your background, strengths and career goals..."
                   rows="5"
-                ></textarea>
+                />
 
               </div>
 
@@ -209,12 +402,21 @@ function Resume() {
             <div className="editor-section">
 
               <div className="section-title">
-                <span>03</span>
+
+                <span>
+                  03
+                </span>
 
                 <div>
-                  <h3>Education</h3>
-                  <p>Highlight your academic background</p>
+                  <h3>
+                    Education
+                  </h3>
+
+                  <p>
+                    Highlight your academic background
+                  </p>
                 </div>
+
               </div>
 
 
@@ -226,7 +428,7 @@ function Resume() {
                   onChange={handleChange}
                   placeholder={"B.Tech in Computer Science\nXYZ University | 2023 – 2027\nCGPA: 8.5/10"}
                   rows="6"
-                ></textarea>
+                />
 
               </div>
 
@@ -237,12 +439,21 @@ function Resume() {
             <div className="editor-section">
 
               <div className="section-title">
-                <span>04</span>
+
+                <span>
+                  04
+                </span>
 
                 <div>
-                  <h3>Skills</h3>
-                  <p>List your technical and professional skills</p>
+                  <h3>
+                    Skills
+                  </h3>
+
+                  <p>
+                    List your technical and professional skills
+                  </p>
                 </div>
+
               </div>
 
 
@@ -254,7 +465,7 @@ function Resume() {
                   onChange={handleChange}
                   placeholder="Java, C++, Python, React, SQL, Git, Data Structures..."
                   rows="4"
-                ></textarea>
+                />
 
               </div>
 
@@ -265,12 +476,21 @@ function Resume() {
             <div className="editor-section">
 
               <div className="section-title">
-                <span>05</span>
+
+                <span>
+                  05
+                </span>
 
                 <div>
-                  <h3>Projects</h3>
-                  <p>Showcase your strongest projects</p>
+                  <h3>
+                    Projects
+                  </h3>
+
+                  <p>
+                    Showcase your strongest projects
+                  </p>
                 </div>
+
               </div>
 
 
@@ -282,7 +502,7 @@ function Resume() {
                   onChange={handleChange}
                   placeholder={"CareerPilot AI\n• Built a career preparation platform using React.\n• Implemented personalized dashboards and tracking.\n• Technologies: React, JavaScript, CSS"}
                   rows="8"
-                ></textarea>
+                />
 
               </div>
 
@@ -293,12 +513,21 @@ function Resume() {
             <div className="editor-section">
 
               <div className="section-title">
-                <span>06</span>
+
+                <span>
+                  06
+                </span>
 
                 <div>
-                  <h3>Experience</h3>
-                  <p>Add internships, jobs or relevant experience</p>
+                  <h3>
+                    Experience
+                  </h3>
+
+                  <p>
+                    Add internships, jobs or relevant experience
+                  </p>
                 </div>
+
               </div>
 
 
@@ -310,7 +539,7 @@ function Resume() {
                   onChange={handleChange}
                   placeholder={"Software Developer Intern\nABC Technologies | June 2026 – August 2026\n• Worked on frontend development.\n• Collaborated with the development team."}
                   rows="8"
-                ></textarea>
+                />
 
               </div>
 
@@ -346,8 +575,15 @@ function Resume() {
           <div className="preview-top">
 
             <div>
-              <h2>Live Preview</h2>
-              <p>Your resume updates as you type.</p>
+
+              <h2>
+                Live Preview
+              </h2>
+
+              <p>
+                Your resume updates as you type.
+              </p>
+
             </div>
 
             <span className="preview-status">
@@ -366,35 +602,48 @@ function Resume() {
                 {resume.name || "YOUR NAME"}
               </h1>
 
+
               <div className="contact-line">
 
                 {resume.email && (
-                  <span>{resume.email}</span>
+                  <span>
+                    {resume.email}
+                  </span>
                 )}
 
                 {resume.phone && (
-                  <span>{resume.phone}</span>
+                  <span>
+                    {resume.phone}
+                  </span>
                 )}
 
                 {resume.location && (
-                  <span>{resume.location}</span>
+                  <span>
+                    {resume.location}
+                  </span>
                 )}
 
               </div>
 
 
               {(resume.linkedin || resume.github) && (
+
                 <div className="contact-line secondary">
 
                   {resume.linkedin && (
-                    <span>{resume.linkedin}</span>
+                    <span>
+                      {resume.linkedin}
+                    </span>
                   )}
 
                   {resume.github && (
-                    <span>{resume.github}</span>
+                    <span>
+                      {resume.github}
+                    </span>
                   )}
 
                 </div>
+
               )}
 
             </div>
@@ -402,71 +651,91 @@ function Resume() {
 
             {/* Summary */}
             {resume.summary && (
+
               <div className="paper-section">
 
-                <h3>PROFESSIONAL SUMMARY</h3>
+                <h3>
+                  PROFESSIONAL SUMMARY
+                </h3>
 
                 <p>
                   {resume.summary}
                 </p>
 
               </div>
+
             )}
 
 
             {/* Education */}
             {resume.education && (
+
               <div className="paper-section">
 
-                <h3>EDUCATION</h3>
+                <h3>
+                  EDUCATION
+                </h3>
 
                 <p className="preformatted">
                   {resume.education}
                 </p>
 
               </div>
+
             )}
 
 
             {/* Skills */}
             {resume.skills && (
+
               <div className="paper-section">
 
-                <h3>TECHNICAL SKILLS</h3>
+                <h3>
+                  TECHNICAL SKILLS
+                </h3>
 
                 <p>
                   {resume.skills}
                 </p>
 
               </div>
+
             )}
 
 
             {/* Projects */}
             {resume.projects && (
+
               <div className="paper-section">
 
-                <h3>PROJECTS</h3>
+                <h3>
+                  PROJECTS
+                </h3>
 
                 <p className="preformatted">
                   {resume.projects}
                 </p>
 
               </div>
+
             )}
 
 
             {/* Experience */}
             {resume.experience && (
+
               <div className="paper-section">
 
-                <h3>EXPERIENCE</h3>
+                <h3>
+                  EXPERIENCE
+                </h3>
 
                 <p className="preformatted">
                   {resume.experience}
                 </p>
 
               </div>
+
             )}
 
 
@@ -483,7 +752,9 @@ function Resume() {
                     ✦
                   </div>
 
-                  <h3>Your resume will appear here</h3>
+                  <h3>
+                    Your resume will appear here
+                  </h3>
 
                   <p>
                     Start filling in your information
