@@ -106,8 +106,20 @@ app.post("/api/signup", async (req, res) => {
 
       // DSA
       dsa: {
-        topicCompletion: {},
-      },
+  topicCompletion: {},
+},
+
+roadmap: {
+  stepCompletion: {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+  },
+},
+
+leetcodeUsername: "",
 
       // LeetCode
       leetcodeUsername: "",
@@ -1068,6 +1080,131 @@ app.put(
           "Something went wrong while updating DSA topic.",
       });
 
+    }
+  }
+);
+// =====================================================
+// GET ROADMAP DATA
+// =====================================================
+
+app.get(
+  "/api/roadmap",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const db = client.db("CareerPilot");
+      const usersCollection = db.collection("users");
+
+      const user = await usersCollection.findOne(
+        {
+          _id: new ObjectId(req.user.userId),
+        },
+        {
+          projection: {
+            roadmap: 1,
+          },
+        }
+      );
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+
+      res.json({
+        roadmap: user.roadmap || {
+          stepCompletion: {
+            "1": true,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Get roadmap error:", error);
+
+      res.status(500).json({
+        message:
+          "Something went wrong while fetching roadmap data.",
+      });
+    }
+  }
+);
+
+// =====================================================
+// UPDATE ROADMAP STEP
+// =====================================================
+
+app.put(
+  "/api/roadmap/step",
+  authenticateToken,
+  async (req, res) => {
+    const { stepId, completed } = req.body;
+
+    try {
+      if (
+        stepId === undefined ||
+        completed === undefined
+      ) {
+        return res.status(400).json({
+          message:
+            "Step ID and completion status are required.",
+        });
+      }
+
+      const db = client.db("CareerPilot");
+      const usersCollection = db.collection("users");
+
+      const userId = new ObjectId(
+        req.user.userId
+      );
+
+      await usersCollection.updateOne(
+        {
+          _id: userId,
+        },
+        {
+          $set: {
+            [`roadmap.stepCompletion.${stepId}`]:
+              Boolean(completed),
+          },
+        }
+      );
+
+      const updatedUser =
+        await usersCollection.findOne(
+          {
+            _id: userId,
+          },
+          {
+            projection: {
+              roadmap: 1,
+            },
+          }
+        );
+
+      res.json({
+        message:
+          "Roadmap progress updated successfully.",
+
+        roadmap:
+          updatedUser?.roadmap || {
+            stepCompletion: {},
+          },
+      });
+    } catch (error) {
+      console.error(
+        "Update roadmap step error:",
+        error
+      );
+
+      res.status(500).json({
+        message:
+          "Something went wrong while updating roadmap.",
+      });
     }
   }
 );
