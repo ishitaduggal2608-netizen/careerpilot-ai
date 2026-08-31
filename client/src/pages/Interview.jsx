@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Interview.css";
 
 function Interview() {
   const [categories, setCategories] = useState([
     {
       id: 1,
+      key: "technical",
       title: "Technical Interview",
       icon: "💻",
       description:
@@ -21,6 +22,7 @@ function Interview() {
     },
     {
       id: 2,
+      key: "hr",
       title: "HR Interview",
       icon: "💬",
       description:
@@ -36,6 +38,7 @@ function Interview() {
     },
     {
       id: 3,
+      key: "mock",
       title: "Mock Interview",
       icon: "🎤",
       description:
@@ -51,34 +54,233 @@ function Interview() {
     },
   ]);
 
-  const markComplete = (id) => {
-    setCategories(
-      categories.map((category) =>
-        category.id === id
-          ? {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // =====================================================
+  // GET INTERVIEW DATA
+  // =====================================================
+
+  useEffect(() => {
+    const fetchInterviewData = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/interview",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert(data.message);
+
+          if (
+            response.status === 401 ||
+            response.status === 403
+          ) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("isLoggedIn");
+
+            window.location.href = "/login";
+          }
+
+          return;
+        }
+
+        const savedCategories =
+          data.interview?.categories || {};
+
+        setCategories((currentCategories) =>
+          currentCategories.map((category) => {
+            const isCompleted =
+              savedCategories[category.key] || false;
+
+            return {
               ...category,
-              completed: !category.completed,
-              progress: category.completed ? category.progress : 100,
-            }
-          : category
-      )
+              completed: isCompleted,
+              progress: isCompleted
+                ? 100
+                : category.progress,
+            };
+          })
+        );
+      } catch (error) {
+        console.error(
+          "Interview fetch error:",
+          error
+        );
+
+        alert(
+          "Unable to connect to the server. Please make sure the backend is running."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInterviewData();
+  }, []);
+
+  // =====================================================
+  // MARK CATEGORY COMPLETE / INCOMPLETE
+  // =====================================================
+
+  const markComplete = async (id) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login again.");
+      window.location.href = "/login";
+      return;
+    }
+
+    const category = categories.find(
+      (item) => item.id === id
     );
+
+    if (!category) {
+      return;
+    }
+
+    const newCompleted =
+      !category.completed;
+
+    try {
+      setSaving(true);
+
+      const response = await fetch(
+        "http://localhost:5000/api/interview/category",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            category: category.key,
+            completed: newCompleted,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+
+        if (
+          response.status === 401 ||
+          response.status === 403
+        ) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("isLoggedIn");
+
+          window.location.href = "/login";
+        }
+
+        return;
+      }
+
+      const savedCategories =
+        data.interview?.categories || {};
+
+      setCategories((currentCategories) =>
+        currentCategories.map((item) => {
+          const isCompleted =
+            savedCategories[item.key] || false;
+
+          return {
+            ...item,
+            completed: isCompleted,
+            progress: isCompleted
+              ? 100
+              : item.progress === 100
+              ? 0
+              : item.progress,
+          };
+        })
+      );
+    } catch (error) {
+      console.error(
+        "Interview update error:",
+        error
+      );
+
+      alert(
+        "Unable to connect to the server. Please make sure the backend is running."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
+
+  // =====================================================
+  // OVERALL PROGRESS
+  // =====================================================
 
   const totalProgress = Math.round(
     categories.reduce(
-      (total, category) => total + category.progress,
+      (total, category) =>
+        total + category.progress,
       0
     ) / categories.length
   );
 
+  // =====================================================
+  // LOADING
+  // =====================================================
+
+  if (loading) {
+    return (
+      <div className="interview-page">
+        <div className="interview-header">
+          <div>
+            <p className="interview-label">
+              Interview Preparation
+            </p>
+
+            <h1>
+              Prepare for Your Interviews
+            </h1>
+
+            <p>
+              Loading your interview progress...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =====================================================
+  // UI
+  // =====================================================
+
   return (
     <div className="interview-page">
 
-      {/* Header */}
+      {/* =================================================
+          HEADER
+      ================================================= */}
+
       <div className="interview-header">
 
         <div>
+
           <p className="interview-label">
             Interview Preparation
           </p>
@@ -88,9 +290,10 @@ function Interview() {
           </h1>
 
           <p>
-            Build confidence and prepare for technical, HR and
-            mock interviews.
+            Build confidence and prepare for
+            technical, HR and mock interviews.
           </p>
+
         </div>
 
         <div className="interview-progress">
@@ -107,24 +310,36 @@ function Interview() {
 
       </div>
 
-      {/* Progress Bar */}
+
+      {/* =================================================
+          PROGRESS BAR
+      ================================================= */}
+
       <div className="interview-progress-bar">
 
         <div
           className="interview-progress-fill"
-          style={{ width: `${totalProgress}%` }}
+          style={{
+            width: `${totalProgress}%`,
+          }}
         ></div>
 
       </div>
 
-      {/* Preparation Cards */}
+
+      {/* =================================================
+          PREPARATION CARDS
+      ================================================= */}
+
       <div className="interview-cards">
 
         {categories.map((category) => (
 
           <div
             className={`interview-card ${
-              category.completed ? "interview-completed" : ""
+              category.completed
+                ? "interview-completed"
+                : ""
             }`}
             key={category.id}
           >
@@ -141,23 +356,31 @@ function Interview() {
 
             </div>
 
+
             <h2>
               {category.title}
             </h2>
+
 
             <p>
               {category.description}
             </p>
 
+
             <div className="interview-topics">
 
-              {category.topics.map((topic) => (
-                <span key={topic}>
-                  {topic}
-                </span>
-              ))}
+              {category.topics.map(
+                (topic) => (
+                  <span key={topic}>
+                    {topic}
+                  </span>
+                )
+              )}
 
             </div>
+
+
+            {/* Category progress */}
 
             <div className="category-progress-bar">
 
@@ -170,11 +393,19 @@ function Interview() {
 
             </div>
 
+
+            {/* Complete button */}
+
             <button
               className="interview-button"
-              onClick={() => markComplete(category.id)}
+              onClick={() =>
+                markComplete(category.id)
+              }
+              disabled={saving}
             >
-              {category.completed
+              {saving
+                ? "Saving..."
+                : category.completed
                 ? "Mark Incomplete"
                 : "Mark Complete"}
             </button>
@@ -185,23 +416,33 @@ function Interview() {
 
       </div>
 
-      {/* Practice Section */}
+
+      {/* =================================================
+          PRACTICE SECTION
+      ================================================= */}
+
       <div className="practice-section">
 
         <div>
+
           <h2>
             Ready to practice?
           </h2>
 
           <p>
-            Start with common interview questions and improve
-            your answers step by step.
+            Start with common interview questions
+            and improve your answers step by step.
           </p>
+
         </div>
 
         <button
           className="practice-button"
-          onClick={() => alert("Interview practice coming soon!")}
+          onClick={() =>
+            alert(
+              "Interview practice coming soon!"
+            )
+          }
         >
           Start Practice
         </button>
