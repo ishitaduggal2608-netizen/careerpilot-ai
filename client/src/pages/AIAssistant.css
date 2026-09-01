@@ -1,27 +1,36 @@
-.ai-page {
-  min-height: 100vh;
-  background: #f8fafc;
-  font-family: Arial, sans-serif;
-  color: #0f172a;
+/* =====================================================
+   CAREERPILOT AI - CHATGPT STYLE
+===================================================== */
+
+* {
   box-sizing: border-box;
 }
 
+.ai-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #0f172a;
+}
 
-/* =========================
+
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 .ai-header {
-  height: 76px;
-  padding: 0 6%;
-  background: white;
+  height: 70px;
+  padding: 0 5%;
+  background: #ffffff;
   border-bottom: 1px solid #e2e8f0;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .ai-brand {
@@ -35,30 +44,36 @@
   height: 40px;
 
   border-radius: 10px;
+
   background: #00a63c;
-  color: white;
+  color: #ffffff;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .ai-brand h1 {
-  font-size: 17px;
   margin: 0 0 3px;
+
+  font-size: 17px;
+  font-weight: 600;
+  color: #0f172a;
 }
 
 .ai-brand p {
+  margin: 0;
+
   color: #64748b;
   font-size: 12px;
-  margin: 0;
+  font-weight: 400;
 }
 
 .ai-back-button {
-  background: white;
+  background: #ffffff;
   color: #00a63c;
 
   border: 1px solid #00a63c;
@@ -70,32 +85,35 @@
   font-weight: 600;
 
   cursor: pointer;
+
+  transition: all 0.2s ease;
 }
 
 .ai-back-button:hover {
   background: #00a63c;
-  color: white;
+  color: #ffffff;
 }
 
 
-/* =========================
+/* =====================================================
    MAIN CONTAINER
-========================= */
+===================================================== */
 
 .ai-container {
-  width: min(900px, 90%);
+  width: min(1000px, 92%);
   margin: 0 auto;
-  padding: 45px 0 50px;
+
+  padding: 40px 0 50px;
 }
 
 
-/* =========================
+/* =====================================================
    INTRO
-========================= */
+===================================================== */
 
 .ai-intro {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 25px;
 }
 
 .ai-main-icon {
@@ -117,34 +135,46 @@
 }
 
 .ai-intro h2 {
-  font-size: 26px;
-  margin: 0 0 9px;
+  margin: 0 0 8px;
+
+  font-size: 27px;
+  font-weight: 500;
+
+  color: #0f172a;
 }
 
 .ai-intro p {
-  max-width: 600px;
+  max-width: 650px;
+
   margin: 0 auto;
 
   color: #64748b;
+
   font-size: 14px;
+  font-weight: 400;
+
   line-height: 1.6;
 }
 
 
-/* =========================
+/* =====================================================
    SUGGESTED QUESTIONS
-========================= */
+===================================================== */
 
 .suggested-questions {
   display: grid;
+
   grid-template-columns: repeat(2, 1fr);
 
   gap: 12px;
+
   margin-bottom: 20px;
 }
 
 .suggested-questions button {
-  background: white;
+  width: 100%;
+
+  background: #ffffff;
 
   border: 1px solid #e2e8f0;
   border-radius: 10px;
@@ -154,7 +184,9 @@
   text-align: left;
 
   color: #334155;
+
   font-size: 13px;
+  font-weight: 400;
 
   cursor: pointer;
 
@@ -162,7 +194,7 @@
   justify-content: space-between;
   align-items: center;
 
-  transition: 0.2s;
+  transition: all 0.2s ease;
 }
 
 .suggested-questions button:hover {
@@ -176,42 +208,77 @@
 }
 
 
-/* =========================
+/* =====================================================
    CHAT BOX
-========================= */
+===================================================== */
 
 .chat-box {
-  background: white;
+  width: 100%;
+
+  background: #ffffff;
 
   border: 1px solid #e2e8f0;
+
   border-radius: 16px;
 
   overflow: hidden;
 
-  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+  box-shadow:
+    0 8px 25px rgba(15, 23, 42, 0.05);
 }
 
+
+/* =====================================================
+   MESSAGE AREA
+===================================================== */
+
 .messages {
-  min-height: 350px;
-  max-height: 500px;
+  height: 650px;
 
   overflow-y: auto;
 
-  padding: 25px;
+  padding: 28px 30px;
+
+  background: #ffffff;
+
+  scroll-behavior: smooth;
 }
 
 
-/* =========================
+/* Custom scrollbar */
+
+.messages::-webkit-scrollbar {
+  width: 7px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* =====================================================
    MESSAGE ROW
-========================= */
+===================================================== */
 
 .message-row {
   display: flex;
+
   align-items: flex-start;
 
-  gap: 10px;
+  gap: 11px;
 
-  margin-bottom: 18px;
+  margin-bottom: 24px;
+
+  width: 100%;
 }
 
 .ai-row {
@@ -223,13 +290,13 @@
 }
 
 
-/* =========================
+/* =====================================================
    AI AVATAR
-========================= */
+===================================================== */
 
 .message-avatar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
 
   flex-shrink: 0;
 
@@ -243,55 +310,114 @@
   justify-content: center;
 
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 
-/* =========================
-   MESSAGES
-========================= */
+/* =====================================================
+   COMMON MESSAGE
+===================================================== */
 
 .message {
-  max-width: 70%;
+  max-width: 82%;
 
-  padding: 12px 15px;
+  padding: 15px 18px;
 
-  border-radius: 12px;
+  border-radius: 14px;
 
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 14px;
+
+  /* IMPORTANT:
+     Normal font weight so entire response
+     does NOT become bold.
+  */
+
+  font-weight: 400;
+
+  line-height: 1.65;
+
+  white-space: pre-wrap;
+
+  overflow-wrap: anywhere;
+
+  word-break: break-word;
+
+  box-sizing: border-box;
 }
+
+
+/* =====================================================
+   AI MESSAGE
+===================================================== */
 
 .ai-message {
   background: #f1f5f9;
+
   color: #334155;
 
-  border-top-left-radius: 4px;
+  border-top-left-radius: 5px;
+
+  font-weight: 400;
+
+  height: auto;
+
+  max-height: none;
+
+  overflow: visible;
 }
+
+
+/* =====================================================
+   USER MESSAGE
+===================================================== */
 
 .user-message {
   background: #00a63c;
-  color: white;
 
-  border-top-right-radius: 4px;
+  color: #ffffff;
+
+  border-top-right-radius: 5px;
+
+  font-weight: 400;
 }
 
 
-/* =========================
+/* =====================================================
+   LONG AI RESPONSES
+===================================================== */
+
+.ai-message {
+  min-height: 20px;
+}
+
+.ai-message p {
+  margin: 0 0 12px;
+}
+
+.ai-message p:last-child {
+  margin-bottom: 0;
+}
+
+
+/* =====================================================
    TYPING INDICATOR
-========================= */
+===================================================== */
 
 .typing-message {
   display: flex;
-  align-items: center;
-  gap: 4px;
 
-  min-width: 45px;
+  align-items: center;
+
+  gap: 5px;
+
+  min-width: 55px;
+
+  min-height: 42px;
 }
 
 .typing-message span {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 
   background: #94a3b8;
 
@@ -323,62 +449,108 @@
 }
 
 
-/* =========================
+/* =====================================================
    INPUT AREA
-========================= */
+===================================================== */
 
 .chat-input-area {
-  display: flex;
-  gap: 10px;
+  width: 100%;
 
-  padding: 15px;
+  display: flex;
+
+  gap: 12px;
+
+  padding: 16px;
+
+  background: #ffffff;
 
   border-top: 1px solid #e2e8f0;
 }
+
+
+/* =====================================================
+   INPUT BOX
+===================================================== */
 
 .chat-input-area input {
   flex: 1;
 
   min-width: 0;
 
+  height: 50px;
+
+  background: #ffffff;
+
   border: 1px solid #cbd5e1;
-  border-radius: 9px;
 
-  padding: 12px 14px;
+  border-radius: 11px;
 
-  font-size: 13px;
+  padding: 0 17px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+
+  font-weight: 400;
+
+  color: #0f172a;
 
   outline: none;
 
-  color: #0f172a;
+  transition: border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.chat-input-area input::placeholder {
+  color: #94a3b8;
 }
 
 .chat-input-area input:focus {
   border-color: #00a63c;
+
+  box-shadow: 0 0 0 3px rgba(0, 166, 60, 0.08);
 }
 
 .chat-input-area input:disabled {
   background: #f8fafc;
 }
 
+
+/* =====================================================
+   SEND BUTTON
+===================================================== */
+
 .chat-input-area button {
+  height: 50px;
+
+  min-width: 105px;
+
   border: none;
 
   background: #00a63c;
-  color: white;
 
-  border-radius: 9px;
+  color: #ffffff;
 
-  padding: 0 18px;
+  border-radius: 11px;
 
-  font-size: 13px;
+  padding: 0 20px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+
   font-weight: 600;
 
   cursor: pointer;
 
   display: flex;
+
   align-items: center;
-  gap: 7px;
+  justify-content: center;
+
+  gap: 8px;
+
+  transition: background 0.2s ease;
 }
 
 .chat-input-area button:hover {
@@ -387,13 +559,14 @@
 
 .chat-input-area button:disabled {
   background: #cbd5e1;
+
   cursor: not-allowed;
 }
 
 
-/* =========================
+/* =====================================================
    DISCLAIMER
-========================= */
+===================================================== */
 
 .ai-disclaimer {
   text-align: center;
@@ -402,19 +575,23 @@
 
   font-size: 11px;
 
+  font-weight: 400;
+
   margin: 0;
 
   padding: 0 15px 15px;
 }
 
 
-/* =========================
+/* =====================================================
    TABLET
-========================= */
+===================================================== */
 
 @media (max-width: 700px) {
+
   .ai-container {
-    width: 92%;
+    width: 94%;
+
     padding-top: 30px;
   }
 
@@ -422,19 +599,35 @@
     grid-template-columns: 1fr;
   }
 
+  .messages {
+    height: 600px;
+
+    padding: 22px 18px;
+  }
+
   .message {
-    max-width: 80%;
+    max-width: 82%;
+
+    font-size: 14px;
   }
 }
 
 
-/* =========================
+/* =====================================================
    MOBILE
-========================= */
+===================================================== */
 
 @media (max-width: 500px) {
+
   .ai-header {
-    padding: 0 5%;
+    height: 64px;
+
+    padding: 0 4%;
+  }
+
+  .ai-brand-icon {
+    width: 36px;
+    height: 36px;
   }
 
   .ai-brand h1 {
@@ -447,26 +640,68 @@
 
   .ai-back-button {
     padding: 8px 11px;
+
+    font-size: 12px;
+  }
+
+  .ai-container {
+    width: 96%;
+
+    padding-top: 25px;
   }
 
   .ai-intro h2 {
     font-size: 22px;
   }
 
+  .ai-intro p {
+    font-size: 13px;
+  }
+
   .messages {
-    padding: 18px;
-    min-height: 300px;
+    height: 550px;
+
+    padding: 18px 12px;
   }
 
   .message {
-    max-width: 82%;
+    max-width: 88%;
+
+    padding: 13px 14px;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+  }
+
+  .message-avatar {
+    width: 29px;
+    height: 29px;
+
+    font-size: 13px;
   }
 
   .chat-input-area {
     padding: 10px;
+
+    gap: 8px;
+  }
+
+  .chat-input-area input {
+    height: 46px;
+
+    padding: 0 12px;
+
+    font-size: 13px;
   }
 
   .chat-input-area button {
-    padding: 0 13px;
+    height: 46px;
+
+    min-width: 75px;
+
+    padding: 0 12px;
+
+    font-size: 13px;
   }
 }

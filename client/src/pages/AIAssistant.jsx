@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState,useRef,useEffect} from "react";
+import ReactMarkdown from "react-markdown";
 import "./AIAssistant.css";
-
 function AIAssistant() {
   const [messages, setMessages] = useState([
     {
@@ -12,6 +12,8 @@ function AIAssistant() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
+  const messagesEndRef = useRef(null);
+
   const suggestedQuestions = [
     "How should I prepare for placements?",
     "Give me a DSA study plan",
@@ -19,80 +21,138 @@ function AIAssistant() {
     "What should I prepare for technical interviews?",
   ];
 
-  const generateResponse = (question) => {
-    const lowerQuestion = question.toLowerCase();
+  // =========================
+  // AUTO SCROLL
+  // =========================
 
-    if (
-      lowerQuestion.includes("dsa") ||
-      lowerQuestion.includes("data structure")
-    ) {
-      return "Start with Arrays, Strings, Linked Lists, Stacks, Queues, Trees and Graphs. Practice problems consistently and focus on understanding the approach rather than memorizing solutions.";
-    }
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages, isTyping]);
 
-    if (
-      lowerQuestion.includes("resume") ||
-      lowerQuestion.includes("cv")
-    ) {
-      return "A strong resume should be concise and achievement-focused. Highlight your technical skills, strongest projects, education and relevant experience. Quantify your achievements whenever possible.";
-    }
+  // =========================
+  // SEND MESSAGE
+  // =========================
 
-    if (
-      lowerQuestion.includes("interview") ||
-      lowerQuestion.includes("technical")
-    ) {
-      return "For technical interviews, prepare DSA, OOP, DBMS, Operating Systems, Computer Networks and questions related to your projects. Practice explaining your approach clearly.";
-    }
-
-    if (
-      lowerQuestion.includes("placement") ||
-      lowerQuestion.includes("prepare")
-    ) {
-      return "A good placement strategy is to work on DSA, core CS subjects, projects, your resume and interview communication together. Set weekly goals and track your progress consistently.";
-    }
-
-    return "That's a great question! I can help you with DSA, technical interviews, resume preparation, career planning and placement preparation. Tell me what you'd like to work on.";
-  };
-
-  const handleSend = (event) => {
-    event.preventDefault();
-
-    const trimmedInput = input.trim();
+  const sendMessage = async (messageText) => {
+    const trimmedInput = messageText.trim();
 
     if (!trimmedInput || isTyping) {
       return;
     }
 
-    const userMessage = {
-      sender: "user",
-      text: trimmedInput,
-    };
+    const token = localStorage.getItem("token");
 
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    // Show user message immediately
     setMessages((previous) => [
       ...previous,
-      userMessage,
+      {
+        sender: "user",
+        text: trimmedInput,
+      },
     ]);
 
     setInput("");
     setIsTyping(true);
 
-    setTimeout(() => {
-      const aiMessage = {
-        sender: "ai",
-        text: generateResponse(trimmedInput),
-      };
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/ai/chat",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({
+            message: trimmedInput,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      // =========================
+      // AUTH ERROR
+      // =========================
+
+      if (
+        response.status === 401 ||
+        response.status === 403
+      ) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        return;
+      }
+
+      // =========================
+      // API ERROR
+      // =========================
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "AI request failed."
+        );
+      }
+
+      // =========================
+      // AI RESPONSE
+      // =========================
 
       setMessages((previous) => [
         ...previous,
-        aiMessage,
+        {
+          sender: "ai",
+          text:
+            data.reply ||
+            "Sorry, I couldn't generate a response.",
+        },
       ]);
+    } catch (error) {
+      console.error("AI error:", error);
 
+      setMessages((previous) => [
+        ...previous,
+        {
+          sender: "ai",
+          text:
+            "Sorry, I couldn't connect to CareerPilot AI right now. Please try again.",
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 800);
+    }
   };
 
-  const handleSuggestion = (question) => {
-    setInput(question);
+  // =========================
+  // FORM SUBMIT
+  // =========================
+
+  const handleSend = async (event) => {
+    event.preventDefault();
+
+    await sendMessage(input);
   };
+
+  // =========================
+  // SUGGESTION CLICK
+  // =========================
+
+  const handleSuggestion = async (question) => {
+    await sendMessage(question);
+  };
+
+  // =========================
+  // BACK TO DASHBOARD
+  // =========================
 
   const handleBack = () => {
     window.location.href = "/dashboard";
@@ -101,7 +161,10 @@ function AIAssistant() {
   return (
     <div className="ai-page">
 
-      {/* Header */}
+      {/* =========================
+          HEADER
+      ========================= */}
+
       <header className="ai-header">
 
         <div className="ai-brand">
@@ -120,7 +183,6 @@ function AIAssistant() {
 
         </div>
 
-
         <button
           className="ai-back-button"
           onClick={handleBack}
@@ -131,10 +193,16 @@ function AIAssistant() {
       </header>
 
 
-      {/* Main Chat Area */}
+      {/* =========================
+          MAIN
+      ========================= */}
+
       <main className="ai-container">
 
-        {/* Intro */}
+        {/* =========================
+            INTRO
+        ========================= */}
+
         <div className="ai-intro">
 
           <div className="ai-main-icon">
@@ -153,17 +221,25 @@ function AIAssistant() {
         </div>
 
 
-        {/* Suggested Questions */}
-        {messages.length === 1 && (
+        {/* =========================
+            SUGGESTED QUESTIONS
+        ========================= */}
+
+        {messages.length === 1 && !isTyping && (
           <div className="suggested-questions">
 
             {suggestedQuestions.map((question) => (
               <button
                 key={question}
-                onClick={() => handleSuggestion(question)}
+                onClick={() =>
+                  handleSuggestion(question)
+                }
               >
                 {question}
-                <span>→</span>
+
+                <span>
+                  →
+                </span>
               </button>
             ))}
 
@@ -171,7 +247,10 @@ function AIAssistant() {
         )}
 
 
-        {/* Chat */}
+        {/* =========================
+            CHAT BOX
+        ========================= */}
+
         <div className="chat-box">
 
           <div className="messages">
@@ -187,28 +266,42 @@ function AIAssistant() {
                 }`}
               >
 
+                {/* AI Avatar */}
+
                 {message.sender === "ai" && (
                   <div className="message-avatar">
                     ✦
                   </div>
                 )}
 
+
+                {/* Message */}
+
                 <div
-                  className={`message ${
-                    message.sender === "user"
-                      ? "user-message"
-                      : "ai-message"
-                  }`}
-                >
-                  {message.text}
-                </div>
+  className={`message ${
+    message.sender === "user"
+      ? "user-message"
+      : "ai-message"
+  }`}
+>
+  {message.sender === "ai" ? (
+    <ReactMarkdown>
+      {message.text}
+    </ReactMarkdown>
+  ) : (
+    message.text
+  )}
+</div>
 
               </div>
 
             ))}
 
 
-            {/* Typing */}
+            {/* =========================
+                TYPING INDICATOR
+            ========================= */}
+
             {isTyping && (
               <div className="message-row ai-row">
 
@@ -227,10 +320,18 @@ function AIAssistant() {
               </div>
             )}
 
+
+            {/* Auto-scroll target */}
+
+            <div ref={messagesEndRef} />
+
           </div>
 
 
-          {/* Input */}
+          {/* =========================
+              INPUT
+          ========================= */}
+
           <form
             className="chat-input-area"
             onSubmit={handleSend}
@@ -248,7 +349,9 @@ function AIAssistant() {
 
             <button
               type="submit"
-              disabled={!input.trim() || isTyping}
+              disabled={
+                !input.trim() || isTyping
+              }
             >
               Send
               <span>→</span>
@@ -256,9 +359,14 @@ function AIAssistant() {
 
           </form>
 
+
+          {/* =========================
+              DISCLAIMER
+          ========================= */}
+
           <p className="ai-disclaimer">
-            CareerPilot AI provides guidance for educational
-            and career preparation purposes.
+            CareerPilot AI provides guidance for
+            educational and career preparation purposes.
           </p>
 
         </div>
