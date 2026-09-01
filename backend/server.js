@@ -6,9 +6,15 @@ const { MongoClient, ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const https = require("https");
+const { GoogleGenAI } = require("@google/genai");
 
 const app = express();
 const PORT = 5000;
+
+// Gemini AI
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
 
 // =====================================================
 // MONGODB CONNECTION
@@ -1514,6 +1520,76 @@ app.put(
       res.status(500).json({
         message:
           "Something went wrong while updating interview progress.",
+      });
+    }
+  }
+);
+// =====================================================
+// AI ASSISTANT API - GEMINI
+// =====================================================
+
+app.post(
+  "/api/ai/chat",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const { message } = req.body;
+
+      if (!message || !message.trim()) {
+        return res.status(400).json({
+          message: "Please enter a question.",
+        });
+      }
+
+      console.log("AI request received:", message);
+
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+
+        contents: message,
+
+        config: {
+
+          systemInstruction: `
+You are CareerPilot AI, a helpful career and placement
+preparation assistant for college students.
+
+You help with:
+- DSA
+- Programming
+- Technical interviews
+- HR interviews
+- Resume preparation
+- Career planning
+- Placement preparation
+- Computer Science subjects
+- Projects
+
+Give practical, clear and encouraging answers.
+
+Use simple explanations when possible.
+For technical questions, provide examples when useful.
+Do not invent personal information about the user.
+          `,
+
+          temperature: 0.7,
+          maxOutputTokens: 5000,
+        },
+      });
+
+      console.log("Gemini response received.");
+
+      res.json({
+        reply: response.text,
+      });
+
+    } catch (error) {
+      console.error("Gemini AI error:", error);
+
+      res.status(500).json({
+        message:
+          error.message ||
+          "Something went wrong while communicating with CareerPilot AI.",
       });
     }
   }
